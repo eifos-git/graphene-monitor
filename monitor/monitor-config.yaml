@@ -1,0 +1,10 @@
+#An arbitrary amount of monitors can be defined
+monitors:
+    #Define the preprocessing source
+    source: http
+
+    #Define the value to be monitored in the processing step
+    trigger: response_code == 200
+
+    #Define actions to be executed in case the trigger is met
+    actions: telegram
