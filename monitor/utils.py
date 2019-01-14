@@ -1,5 +1,4 @@
 """Maps all the config values to their classes"""
-from monitor import sources, trigger, actions
+from sources import *
 
-
-sources = {"http": sources.Http, }
+MAP_SOURCES_TO_CLASS = {"http": Http.Http_source}

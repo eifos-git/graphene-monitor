@@ -12,7 +12,7 @@ class AbstractMonitor(ABC):
 
     @abstractmethod
     def set_source(self, source):
-        assert(issubclass(AbstractSource))
+        assert(issubclass(source))
         if self.source != None:
             print("only one source can be added. Will be ignored!")
         else:
@@ -26,7 +26,7 @@ class AbstractMonitor(ABC):
         self.trigger.append(trigger)
 
     @abstractmethod
-    def add_actions(self, action):
+    def add_action(self, action):
         assert(issubclass(AbstractTrigger, action))
         if self.actions == None:
             actions = []
