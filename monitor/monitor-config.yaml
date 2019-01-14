@@ -1,10 +1,31 @@
-#An arbitrary amount of monitors can be defined
-monitors:
+monitor:
     #Define the preprocessing source
-    source: http
+    source:
+        type: http
+        address: http://localhost:5000/overview
 
-    #Define the value to be monitored in the processing step
-    trigger: response_code == 200
+
+    #Define the values to be monitored in the processing step and its triggers
+    triggers:
+        type: value
+        list:
+            - trigger1:
+                unequal: 200
+                level: 0 #Use level to map to console actions, high levels indicate high priorities
+
+            - trigger2:
+                greater: 300
+                level: 1
+
 
     #Define actions to be executed in case the trigger is met
-    actions: telegram
+    actions:
+        level-redundancy: True #If True all actions below the level will be executed as well
+        list:
+            - action1:
+                type: log,
+                level: 0
+
+            - action2:
+                type: console,
+                level: 1
