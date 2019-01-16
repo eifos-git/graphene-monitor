@@ -7,20 +7,22 @@ monitor:
 
     #Define the values to be monitored in the processing step and its triggers
     triggers:
-        type: value
         list:
             - trigger1:
+                type: int_compare
                 unequal: 200
-                level: 0 #Use level to map to console actions, high levels indicate high priorities
+                group: 0 #All triggers are checked before they fire. If you define group, you can link two triggers
+                level: 0 #Use level to map to console action, high levels indicate high priorities
 
             - trigger2:
+                type: int_compare
                 greater: 300
                 level: 1
 
 
-    #Define actions to be executed in case the trigger is met
+    #Define action to be executed in case the trigger is met
     actions:
-        level-redundancy: True #If True all actions below the level will be executed as well
+        level-redundancy: True #If True all action below the level will be executed as well
         list:
             - action1:
                 type: log,

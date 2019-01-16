@@ -12,7 +12,7 @@ class AbstractAction(ABC):
 
 
     """
-    abstract actions:
+    abstract action:
         get_trigger
         message 
         send message 

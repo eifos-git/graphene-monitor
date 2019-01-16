@@ -1,10 +1,15 @@
 from abc import ABC, abstractmethod
-from sources import AbstractSource
-from trigger import AbstractTrigger
-from actions import AbstractAction
+from source.AbstractSource import AbstractSource
+from trigger.AbstractTrigger import AbstractTrigger
+from action.AbstractAction import AbstractAction
+from utils import get_class_for_source, get_class_for_trigger, get_class_for_action
 
 class AbstractMonitor(ABC):
     """Abstract monitor class that is used to set up the monitor as defined in config"""
+    source = None
+    triggers = list()
+    actions = list()
+
     def __init__(self, config):
         self.source_config = config["source"]
         self.triggers_config = config["triggers"]
@@ -12,25 +17,43 @@ class AbstractMonitor(ABC):
 
     @abstractmethod
     def set_source(self, source):
-        assert(issubclass(source))
+        """
+        :param source: One of the source defined in
+        :type source: str
+        """
+        source = get_class_for_source(source)
+        assert(issubclass(source, AbstractSource))
         if self.source != None:
             print("only one source can be added. Will be ignored!")
         else:
-            self.source = source
+            source = source(self.source_config)
+            print("Source Added")
 
     @abstractmethod
-    def add_trigger(self, trigger):
-        assert(issubclass(AbstractTrigger, trigger))
-        if self.trigger == None:
-            trigger = []
-        self.trigger.append(trigger)
+    def add_triggers(self, triggers):
+        """
+        :param triggers: List of triggers defined in the config file.
+        """
+        if type(triggers) is not list:
+            triggers = [triggers]
+        for trigger in triggers:
+            if len(trigger) != 1:
+                raise AttributeError("This program doesn't support Triggers nested inside of triggers. "  
+                                     "Please remove anything inside the trigger besides the list")
+            for trigger_name, trigger_cfg in trigger.items():
+                trigger_type = self.get_config("triggers", "type", [trigger_name])
+                trigger_config = trigger_cfg
+            trigger_type = get_class_for_trigger(trigger_type)
+            trigger = trigger_type(trigger_config)
+            assert(issubclass(type(trigger), AbstractTrigger))
+            self.triggers.append(trigger)
 
     @abstractmethod
-    def add_action(self, action):
-        assert(issubclass(AbstractTrigger, action))
+    def add_actions(self, action):
+
         if self.actions == None:
             actions = []
-        self.actinos.append(action)
+        self.actions.append(action)
 
 
     def get_config(self, monitor_domain, value, subclasses=None):
@@ -40,7 +63,7 @@ class AbstractMonitor(ABC):
         Usage: Get the setting for <value> from the current Monitor. Everytime yaml uses a list,
             subclasses decides where to go next
 
-        param monitor_domain: either source/triggers/actions or s/t/a
+        param monitor_domain: either source/triggers/action or s/t/a
         param value: value to be searched for. If the value is defined multiple times for one monitor,
             i.e. level use the parameter subclasses
         param subclasse: Has to be a list! In case of ambiguity enter the name of the subclass.
@@ -54,7 +77,7 @@ class AbstractMonitor(ABC):
         elif monitor_domain in ["a", "actions"]:
             config = self.actions_config
         else:
-            raise ValueError("monitor_domain hast to be either source, triggers or actions")
+            raise ValueError("monitor_domain hast to be either source, triggers or action")
 
         def search_recursively(config, value, subclasses):
             if type(config) is list:
