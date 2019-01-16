@@ -2,21 +2,21 @@ monitor:
     #Define the preprocessing source
     source:
         type: http
-        url: http://127.0.0.1:5000/error
+        url: http://127.0.0.1:5000/
 
 
     #Define the values to be monitored in the processing step and its triggers
     triggers:
         list:
-            - trigger1:
+            - trigger1: #TODO: is it useful to add logical disjunction ?
                 type: value_compare
-                unequal: 200
+                "!=": 200
                 group: 0 #All triggers are checked before they fire. If you define group, you can link two triggers
                 level: 0 #Use level to map to console action, high levels indicate high priorities
 
             - trigger2:
                 type: value_compare
-                greater: 300
+                equal: 200
                 level: 1
 
 

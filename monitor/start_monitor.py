@@ -1,6 +1,8 @@
 from monitor import *
+import time
 import yaml
 from monitor_variations.monitor import Monitor
+WAITING_TIME = 2 # in seconds
 
 class Config():
     """Load and save monitor Configuration"""
@@ -20,7 +22,7 @@ def do_monitoring(monitor):
     data = monitor.source.retrieve_data()
     if data is None:
         raise Exception("Data is none, therefore it cant be used as input for trigger")
-
+    print("Data received: " + str(data))
     triggers_fired = []
     for trigger in monitor.triggers:
         trigger_status = trigger.check_condition(data)
@@ -29,7 +31,12 @@ def do_monitoring(monitor):
 
     if triggers_fired is not []:
         for action in monitor.actions:
-            action.shoot(triggers_fired)
+            #Hier sollte Monitor comparison stattfinden
+            #action.shoot(triggers_fired)
+
+            print("The following triggers are supposed to fire now!")
+            print(triggers_fired)
+        triggers_fired = []
 
 
 Config.load("monitor-config.yaml")
@@ -43,5 +50,7 @@ if __name__ == '__main__':
 
     print("Amount of monitors added: " + str(len(monitors)))
 
-    for monitor in monitors:
-        do_monitoring(monitor)
+    while True:
+        for monitor in monitors:
+            do_monitoring(monitor)
+        time.sleep(2)

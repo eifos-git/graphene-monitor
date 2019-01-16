@@ -4,7 +4,7 @@ from trigger import *
 from action import *
 
 MAP_SOURCE_TO_CLASS = {"http": http.Http}
-MAP_TRIGGER_TO_CLASS = {"value_compare": value_compare.Value_Compare}
+MAP_TRIGGER_TO_CLASS = {"value_compare": valuecompare.ValueCompare}
 MAP_ACTION_TO_CLASS = {"log": log.Log, "console": console.Console}
 
 
