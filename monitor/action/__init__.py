@@ -1,3 +1,5 @@
 __all__ = [
-    "AbstractAction"
+    "AbstractAction",
+    "console",
+    "log"
 ]

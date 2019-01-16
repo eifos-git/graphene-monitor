@@ -2,32 +2,33 @@ monitor:
     #Define the preprocessing source
     source:
         type: http
-        address: http://localhost:5000/overview
+        url: http://127.0.0.1:5000/error
 
 
     #Define the values to be monitored in the processing step and its triggers
     triggers:
         list:
             - trigger1:
-                type: int_compare
+                type: value_compare
                 unequal: 200
                 group: 0 #All triggers are checked before they fire. If you define group, you can link two triggers
                 level: 0 #Use level to map to console action, high levels indicate high priorities
 
             - trigger2:
-                type: int_compare
+                type: value_compare
                 greater: 300
                 level: 1
 
 
     #Define action to be executed in case the trigger is met
     actions:
-        level-redundancy: True #If True all action below the level will be executed as well
+        level-redundancy: True #If True all actions with a level smaller that than the
+                               #triggerlevel will be executed as well (default=False)
         list:
             - action1:
-                type: log,
+                type: log
                 level: 0
 
             - action2:
-                type: console,
+                type: console
                 level: 1

@@ -10,13 +10,6 @@ class AbstractSource(ABC):
         """
         self.config = config
 
-    @abstractmethod
-    def retrieve_data(self):
-        """Impemented by the subclasses. The Function that gets called every monitor iteration to
-        retrive the new data to be checked by trigger
-        """
-        pass
-
     def get_config(self, config_title):
         """Get configuration of this Source
 
@@ -24,3 +17,10 @@ class AbstractSource(ABC):
         :return: value of config_title
         """
         return self.config[config_title]
+
+    @abstractmethod
+    def retrieve_data(self):
+        """Impemented by the subclasses. The Function that gets called every monitor iteration to
+        retrive the new data to be checked by trigger
+        """
+        pass

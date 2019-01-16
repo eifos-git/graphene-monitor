@@ -26,12 +26,13 @@ class AbstractMonitor(ABC):
         if self.source != None:
             print("only one source can be added. Will be ignored!")
         else:
-            source = source(self.source_config)
+            self.source = source(self.source_config)
             print("Source Added")
 
     @abstractmethod
     def add_triggers(self, triggers):
-        """
+        """Add a list of triggers to the monitro that will be tested every monitor iteration.
+
         :param triggers: List of triggers defined in the config file.
         """
         if type(triggers) is not list:
@@ -39,21 +40,33 @@ class AbstractMonitor(ABC):
         for trigger in triggers:
             if len(trigger) != 1:
                 raise AttributeError("This program doesn't support Triggers nested inside of triggers. "  
-                                     "Please remove anything inside the trigger besides the list")
+                                     "Please remove any list inside of the trigger")
             for trigger_name, trigger_cfg in trigger.items():
                 trigger_type = self.get_config("triggers", "type", [trigger_name])
-                trigger_config = trigger_cfg
             trigger_type = get_class_for_trigger(trigger_type)
-            trigger = trigger_type(trigger_config)
+            trigger = trigger_type(trigger_cfg)
             assert(issubclass(type(trigger), AbstractTrigger))
             self.triggers.append(trigger)
 
     @abstractmethod
-    def add_actions(self, action):
+    def add_actions(self, actions):
+        """Add all the actions defined in the config file as a list to the monitor class and initializes
+        those action classes
+        """
 
-        if self.actions == None:
-            actions = []
-        self.actions.append(action)
+        if type(actions) is not list:
+            actions = [actions]
+        for action in actions:
+            if len(action) != 1:
+                raise AttributeError("This program doesn't supprort multiple actions within one action. "
+                                     "Please remove any list from the action")
+
+            for action_name, action_cfg in action.items():
+                action_type = self.get_config("actions", "type", [action_name])
+            action_type = get_class_for_action(action_type)
+            action = action_type(action_cfg)
+            assert(issubclass(type(action), AbstractAction))
+            self.actions.append(action)
 
 
     def get_config(self, monitor_domain, value, subclasses=None):

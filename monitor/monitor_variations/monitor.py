@@ -7,8 +7,7 @@ class Monitor(AbstractMonitor):
         super().__init__(config)
         self.set_source(self.get_config("source", "type"))
         self.add_triggers(self.get_config("triggers", "list"))
-        self.add_actions(self.get_config("action", "list"))
-        print("Monitor building finished successfully")
+        self.add_actions(self.get_config("actions", "list"))
 
     def set_source(self, source):
         super().set_source(source=source)
