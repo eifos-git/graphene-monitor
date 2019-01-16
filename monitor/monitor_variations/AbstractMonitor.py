@@ -41,9 +41,11 @@ class AbstractMonitor(ABC):
             if len(trigger) != 1:
                 raise AttributeError("This program doesn't support Triggers nested inside of triggers. "  
                                      "Please remove any list inside of the trigger")
+
             for trigger_name, trigger_cfg in trigger.items():
                 trigger_type = self.get_config("triggers", "type", [trigger_name])
             trigger_type = get_class_for_trigger(trigger_type)
+            trigger_cfg["name"] = trigger_name # Save the name of the trigger to enable a more meaningful action
             trigger = trigger_type(trigger_cfg)
             assert(issubclass(type(trigger), AbstractTrigger))
             self.triggers.append(trigger)
@@ -67,7 +69,6 @@ class AbstractMonitor(ABC):
             action = action_type(action_cfg)
             assert(issubclass(type(action), AbstractAction))
             self.actions.append(action)
-
 
     def get_config(self, monitor_domain, value, subclasses=None):
         """TODO: This is lazy coding to make it work at the time. There might be some cases in\

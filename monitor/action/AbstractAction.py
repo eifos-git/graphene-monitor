@@ -19,7 +19,7 @@ class AbstractAction(ABC):
         return self.config[config_title]
 
     @abstractmethod
-    def shoot(self):
+    def fire(self):
         """This method is called, whenever some trigger conditions are met"""
         pass
 

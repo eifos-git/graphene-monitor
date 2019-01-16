@@ -20,8 +20,11 @@ class ValueCompare(AbstractTrigger):
             if cfunc is not None:
                 if not cfunc:
                     # One trigger condition is false and therfore it shouldnt fire
-                    return None
+                    # We return it anyway to enable groupings
+                    self.config["fire_condition_met"] = False
+                    return self.config
             cfunc = None
+        self.config["fire_condition_met"] = True
         return self.config
 
 

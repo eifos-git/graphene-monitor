@@ -8,16 +8,28 @@ monitor:
     #Define the values to be monitored in the processing step and its triggers
     triggers:
         list:
-            - trigger1: #TODO: is it useful to add logical disjunction ?
+            - UnexpectedResponseCode: #TODO: is it useful to add logical disjunction ?
                 type: value_compare
-                "!=": 200
-                group: 0 #All triggers are checked before they fire. If you define group, you can link two triggers
-                level: 0 #Use level to map to console action, high levels indicate high priorities
+                "==": 200
+                level: 0 #Use level to map to console action, high levels indicate high priorities. Default = 0
 
-            - trigger2:
+            - ErrorResponseCode:
                 type: value_compare
-                equal: 200
+                greater: 400
                 level: 1
+
+            - GroupTrigger1:
+                type: value_compare
+                ">": 200
+                level: 1 # All triggers are tested before the first fires. With groups you can link two triggers
+                        #with different types together. level is maximum level of all members
+                group: 0
+
+            - GroupTrigger2:
+                type: value_compare
+                "<": 300
+                level: 1
+                group: 0
 
 
     #Define action to be executed in case the trigger is met

@@ -1,4 +1,5 @@
 from monitor import *
+from monitor.monitor.trigger.utils import collapse_triggers
 import time
 import yaml
 from monitor_variations.monitor import Monitor
@@ -18,24 +19,34 @@ class Config():
                 Config.data.append(yaml.load(stream))
 
 
+
 def do_monitoring(monitor):
     data = monitor.source.retrieve_data()
     if data is None:
         raise Exception("Data is none, therefore it cant be used as input for trigger")
     print("Data received: " + str(data))
-    triggers_fired = []
+    triggers = []
     for trigger in monitor.triggers:
         trigger_status = trigger.check_condition(data)
         if trigger_status:
-            triggers_fired.append(trigger_status)
+            triggers.append(trigger_status)
 
-    if triggers_fired is not []:
+    triggers = collapse_triggers(triggers) # remove all false conditions
+
+    #TODO:
+    """Triggers should only fire once per group, with the highest defined level and all the
+    trigger information in one action
+    
+    Add implementation for one trigger. 
+    
+    Execute the actions for every trigger."""
+    if triggers is not []:
         for action in monitor.actions:
             #Hier sollte Monitor comparison stattfinden
             #action.shoot(triggers_fired)
 
             print("The following triggers are supposed to fire now!")
-            print(triggers_fired)
+            print(triggers)
         triggers_fired = []
 
 
