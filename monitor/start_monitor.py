@@ -1,6 +1,6 @@
 from monitor import *
 import yaml
-from monitor_class.monitor import Monitor
+from monitor_variations.monitor import Monitor
 
 class Config():
     """Load and save monitor Configuration"""

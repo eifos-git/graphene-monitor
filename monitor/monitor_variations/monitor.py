@@ -1,4 +1,4 @@
-from monitor_class.AbstractMonitor import AbstractMonitor
+from monitor_variations.AbstractMonitor import AbstractMonitor
 
 
 class Monitor(AbstractMonitor):
