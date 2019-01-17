@@ -37,6 +37,9 @@ def do_monitoring(monitor):
     """Triggers should only fire once per group, with the highest defined level and all the
     trigger information in one action
     
+    The way messages work is bad. We should use a message function in trigger to define how the message is printed for each trigger
+    not the other way around. messages should be part of trigger not action.
+    
     Add implementation for one trigger. 
     
     Execute the actions for every trigger."""
