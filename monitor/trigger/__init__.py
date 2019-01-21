@@ -1,5 +1,5 @@
 __all__ = [
     "AbstractTrigger",
-    "valuecompare",
+    "trigger_type",
     "utils"
 ]

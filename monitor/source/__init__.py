@@ -1,4 +1,4 @@
 __all__ = [
     "AbstractSource",
-    "http",
+    "source_type",
 ]

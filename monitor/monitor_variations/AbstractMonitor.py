@@ -66,7 +66,7 @@ class AbstractMonitor(ABC):
                 action_type = self.get_config("actions", "type", [action_name])
             action_type = get_class_for_action(action_type)
             action = action_type(action_cfg)
-            assert(issubclass(type(action), AbstractAction))
+            #assert(issubclass(type(action), AbstractAction))
             self.actions.append(action)
 
     def get_config(self, monitor_domain, value, subclasses=None):

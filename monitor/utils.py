@@ -1,11 +1,15 @@
 """Maps all the config values to their classes"""
-from source import *
-from trigger import *
-from action import *
+from source.source_type import *
+from trigger.trigger_type import *
+from action.action_type import *
 
 MAP_SOURCE_TO_CLASS = {"http": http.Http}
+
 MAP_TRIGGER_TO_CLASS = {"value_compare": valuecompare.ValueCompare}
-MAP_ACTION_TO_CLASS = {"log": log.Log, "console": console.Console}
+
+MAP_ACTION_TO_CLASS = {"log": log.Log,
+                       "console": console.Console,
+                       "telegram": telegram_action.TelegramAction}
 
 
 def get_class_for_source(source):

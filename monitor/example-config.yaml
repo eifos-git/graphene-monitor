@@ -16,7 +16,7 @@ monitor:
             - ErrorResponseCode:
                 type: value_compare
                 greater_or_equal: 400
-                level: 1
+                level: 2
 
             - MultipleTriggerTests:
                 type: value_compare
@@ -50,3 +50,7 @@ monitor:
             - action2:
                 type: console
                 level: 1
+
+            - action3:
+                type: telegram
+                level: 2
