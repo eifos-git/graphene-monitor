@@ -1,9 +1,10 @@
 from monitor import *
-from monitor.monitor.trigger.utils import collapse_triggers
+from monitor.trigger.utils import collapse_triggers
 import time
 import yaml
 from monitor_variations.monitor import Monitor
-WAITING_TIME = 2 # in seconds
+WAITING_TIME = 2  # in seconds
+
 
 class Config():
     """Load and save monitor Configuration"""
@@ -12,51 +13,47 @@ class Config():
 
     @staticmethod
     def load(monitor_config_files):
-        if type(monitor_config_files == str):
+        if type(monitor_config_files) == str:
             monitor_config_files = [monitor_config_files]
         for file in monitor_config_files:
             with open(file, 'r') as stream:
                 Config.data.append(yaml.load(stream))
 
 
-
 def do_monitoring(monitor):
     data = monitor.source.retrieve_data()
-    if data is None:
-        raise Exception("Data is none, therefore it cant be used as input for trigger")
-    print("Data received: " + str(data))
-    triggers = []
-    for trigger in monitor.triggers:
-        trigger_status = trigger.check_condition(data)
-        if trigger_status:
-            triggers.append(trigger_status)
+    if data is not None:
+        triggers = []
+        for trigger in monitor.triggers:
+            if trigger.check_condition(data):
+                triggers.append(trigger)
 
-    triggers = collapse_triggers(triggers) # remove all false conditions
-
-    #TODO:
-    """Triggers should only fire once per group, with the highest defined level and all the
-    trigger information in one action
-    
-    The way messages work is bad. We should use a message function in trigger to define how the message is printed for each trigger
-    not the other way around. messages should be part of trigger not action.
-    
-    Add implementation for one trigger. 
-    
-    Execute the actions for every trigger."""
-    if triggers is not []:
+        triggers = collapse_triggers(triggers)  # list of all the triggers with the correct conditon
+        # as trigger[i].get_condition
+        for trigger in triggers:
+            if trigger.get_condition() is False:
+                continue
+            message = trigger.prepare_message()
+            for action in monitor.actions:
+                try:
+                    trigger_level = trigger.get_config("level")
+                except KeyError:
+                    raise KeyError("A level needs to be provided for every trigger")
+                if trigger_level >= action.level:
+                    action.fire(message)
+    else:
+        # Data is None
+        # TODO: Refactoring. Move this to Monitor class
         for action in monitor.actions:
-            #Hier sollte Monitor comparison stattfinden
-            #action.shoot(triggers_fired)
-
-            print("The following triggers are supposed to fire now!")
-            print(triggers)
-        triggers_fired = []
+            action.fire("Trigger: UnreachableSourceTrigger\n"
+                        "The source {0} is unreachable.".format(monitor.source.config))
 
 
-Config.load("monitor-config.yaml")
+
+Config.load(["example-config.yaml"])
 
 if __name__ == '__main__':
-    #TODO: Files as input instead
+    # TODO: Multiple monitors doesnt work
 
     monitors = []
     for monitor_config in Config.data:

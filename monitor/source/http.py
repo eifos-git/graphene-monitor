@@ -1,8 +1,5 @@
 from source.AbstractSource import AbstractSource
 import requests
-from urllib3.exceptions import MaxRetryError
-#WARNING do not import anything above source
-"""Http can be used to test the availability of a website"""
 
 
 class Http(AbstractSource):
@@ -11,7 +8,10 @@ class Http(AbstractSource):
         super().set_config(source_config)
 
     def retrieve_data(self):
-        print("Retreiving Data")
-        r = requests.get(self.get_config("url"))
+        """Returns the status code of the http request. """
+        try:
+            r = requests.get(self.get_config("url"))
+        except requests.exceptions.ConnectionError:
+            return None
         return r.status_code
 

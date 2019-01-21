@@ -8,14 +8,20 @@ monitor:
     #Define the values to be monitored in the processing step and its triggers
     triggers:
         list:
-            - UnexpectedResponseCode: #TODO: is it useful to add logical disjunction ?
+            - UnexpectedResponseCode:
                 type: value_compare
                 "==": 200
                 level: 0 #Use level to map to console action, high levels indicate high priorities. Default = 0
 
             - ErrorResponseCode:
                 type: value_compare
-                greater: 400
+                greater_or_equal: 400
+                level: 1
+
+            - MultipleTriggerTests:
+                type: value_compare
+                greater_or_equal: 200
+                less_or_equal: 300
                 level: 1
 
             - GroupTrigger1:

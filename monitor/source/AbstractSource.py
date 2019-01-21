@@ -23,4 +23,3 @@ class AbstractSource(ABC):
         """Impemented by the subclasses. The Function that gets called every monitor iteration to
         retrive the new data to be checked by trigger
         """
-        pass

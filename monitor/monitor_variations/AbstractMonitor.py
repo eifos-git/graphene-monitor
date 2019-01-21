@@ -22,7 +22,6 @@ class AbstractMonitor(ABC):
         :type source: str
         """
         source = get_class_for_source(source)
-        assert(issubclass(source, AbstractSource))
         if self.source != None:
             print("only one source can be added. Will be ignored!")
         else:

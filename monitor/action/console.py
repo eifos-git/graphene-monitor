@@ -6,6 +6,6 @@ class Console(AbstractAction):
     def __init__(self, config):
         super().set_config(config)
 
-    def fire(self):
-        print("Printing message to console")
+    def fire(self, message):
+        print(message)
 

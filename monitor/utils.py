@@ -9,13 +9,24 @@ MAP_ACTION_TO_CLASS = {"log": log.Log, "console": console.Console}
 
 
 def get_class_for_source(source):
-    return MAP_SOURCE_TO_CLASS[source]
+    try:
+        return MAP_SOURCE_TO_CLASS[source]
+    except KeyError:
+        raise KeyError("The source specified in config cannot be found. Check for "
+                       "typos and make sure to add the source to monitor/utils.py")
 
 
 def get_class_for_trigger(trigger):
-    return MAP_TRIGGER_TO_CLASS[trigger]
+    try:
+        return MAP_TRIGGER_TO_CLASS[trigger]
+    except KeyError:
+        raise KeyError("The trigger specified in config cannot be found. Check for "
+                       "typos and make sure to add the trigger to monitor/utils.py")
 
 
 def get_class_for_action(action):
-    return MAP_ACTION_TO_CLASS[action]
-
+    try:
+        return MAP_ACTION_TO_CLASS[action]
+    except KeyError:
+        raise KeyError("The actino specified in config cannot be found. Check for "
+                       "typos and make sure to add the action to monitor/utils.py")

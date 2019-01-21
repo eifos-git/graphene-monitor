@@ -11,9 +11,27 @@ class ValueCompare(AbstractTrigger):
     def __init__(self, config):
         super().set_config(config)
 
+    def prepare_message(self):
+        data = self.get_config("source_value")
+        message = ""
+        message += "Trigger: {0} fired!\n".format(self.get_config("name"))
+        message += "Data returned is {0}\n".format(data)
+        message += "Trigger conditions:\n"
+        for (key, value) in self.config.items():
+            cfunc = evaluate_trigger_condition(key, value, data)
+            if cfunc is True:
+                message += "   - Data {0} {1}\n".format(key, value)
+            elif cfunc is None:
+                pass  # Config data not used for the message
+            else:
+                raise ValueError("This should not happen")
+        return message
+
     def check_condition(self, data):
-        if type(data) not in [int, float]:
-            raise TypeError("Value_Compare can only compare int or float")
+        super().check_condition(data) # add data to config as source_value
+
+        if type(data) not in [int, float, bool]:
+            raise TypeError("Value_Compare can only compare int, float or bool")
 
         for (key, value) in self.config.items():
             cfunc = evaluate_trigger_condition(key, value, data)
@@ -21,10 +39,10 @@ class ValueCompare(AbstractTrigger):
                 if not cfunc:
                     # One trigger condition is false and therfore it shouldnt fire
                     # We return it anyway to enable groupings
-                    self.config["fire_condition_met"] = False
+                    self.fire_condition_met = False
                     return self.config
             cfunc = None
-        self.config["fire_condition_met"] = True
+        self.fire_condition_met = True
         return self.config
 
 

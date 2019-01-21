@@ -1,0 +1,27 @@
+monitor:
+    source:
+        type: serverstatus
+        url: http://127.0.0.1:5000/
+
+    triggers:
+        list:
+            - ExpectedBehaviour:
+                type: value_compare
+                equal: 1
+                level: 0
+
+            - ServerUnreachable:
+                type: value_compare
+                unequal: 1
+                level: 1
+
+    actions:
+        list:
+            - logging:
+                type: log
+                level: 0
+
+            - warning:
+                type: console
+                level: 1
+
