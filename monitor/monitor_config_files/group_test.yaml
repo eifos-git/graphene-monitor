@@ -15,14 +15,14 @@ monitor:
                 equal: 400
                 level: 1
 
-            - GroupTrigger1:
+            - GroupTrigger1.1:
                 type: value_compare
                 ">": 200
                 level: 0 # All triggers are tested before the first fires. With groups you can link two triggers
                         #with different types together. level is maximum level of all members
                 group: 0
 
-            - GroupTrigger2:
+            - GroupTrigger2.1:
                 type: value_compare
                 "<": 300
                 level: 1

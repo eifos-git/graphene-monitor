@@ -2,7 +2,7 @@ monitor:
     #Define the preprocessing source
     source:
         type: http
-        url: http://127.0.0.1:5000/
+        url: http://127.0.0.1:5001/
         error_level: 2
 
 
@@ -54,4 +54,4 @@ monitor:
 
             - action3:
                 type: telegram
-                level: 3
+                level: 2

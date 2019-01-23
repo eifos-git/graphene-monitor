@@ -83,8 +83,8 @@ def start_working(monitors):
     :param monitors: list of Monitor objects
     """
 
-    if Config.get_bool_multithreading():
-        while True:
+    while True:
+        if Config.get_bool_multithreading():
             threads = []
             for monitor in monitors:
                 threads.append(threading.Thread(target=monitor.do_monitoring))
@@ -95,24 +95,31 @@ def start_working(monitors):
             for thread in threads:
                 thread.join()
             threads.clear()
-            print("------- Monitor cycle finished. Going to sleep now zZz. ------")
-            time.sleep(Config.get_monitor_cycle_length())
-    else:
-        while True:
+        else:
             for monitor in monitors:
                 monitor.do_monitoring()
-            print("------- Monitor cycle finished. Going to sleep now zZz. ------")
-            time.sleep(Config.get_monitor_cycle_length())
+        print("------- Monitor cycle finished. Going to sleep now zZz. ------")
+        print("\n")
+        time.sleep(Config.get_monitor_cycle_length())
 
 
 Config.load_general_config()
 
 if __name__ == '__main__':
+    # TODO COnfig Refactroing ware angemessen
+    # TODO Multiple Monitors bug
+    """Also: 
+    group message print
+    add BTS Support
+    add database support for a public api 
+    Eine source d.h mache triggers und action als liste von einers source -> mehrere sources pro monitor
+    _ überall d.h. trigger.get_level
+    monitor als threads ?"""
+
     Config.load_monitor_config(["example_config.yaml", "group_test.yaml"])
 
     monitors = setup_monitors()  # Initiates Monitors
 
-    print("Amount of monitors added: " + str(len(monitors)))
-
+    print("{0} Monitor(s) added! Start Monitoring\n\n".format(len(monitors)))
     start_working(monitors)
 

@@ -39,7 +39,6 @@ class AbstractMonitor(ABC):
                 if trigger_level >= action.level:
                     action.fire(message)
 
-
     @abstractmethod
     def set_source(self, source):
         """
@@ -51,7 +50,6 @@ class AbstractMonitor(ABC):
             print("only one source can be added. Will be ignored!")
         else:
             self.source = source(self.source_config)
-            print("Source Added")
 
     @abstractmethod
     def add_triggers(self, triggers):
@@ -96,7 +94,11 @@ class AbstractMonitor(ABC):
 
     @abstractmethod
     def handle_no_data(self, level=None):
-        """Handles the trigger source not available. """
+        """Handles the trigger source not available.
+        :param level: None means that all actions will fire, otherwise it uses the usual level convention"""
+        print("monitor 1:")
+        for trigger in self.triggers:
+            print(trigger.get_config("name"))
         for action in self.actions:
             if level is None or action.level <= level:
                 action.fire("Trigger: UnreachableSourceTrigger\n"
@@ -115,7 +117,6 @@ class AbstractMonitor(ABC):
         param subclasse: Has to be a list! In case of ambiguity enter the name of the subclass.
             i.e. subclasses=["trigger1"] if you want the config of trigger 1"""
 
-        config = []
         if monitor_domain in ["s", "source"]:
             config = self.source_config
         elif monitor_domain in ["t", "triggers"]:
@@ -134,13 +135,12 @@ class AbstractMonitor(ABC):
                     if subclass in entries:
                         return search_recursively(entries[subclass], value, subclasses)
 
-
             for key in config:
                 if key == value:
                     return config[key]
                 if type(config[key]) is list:
                     srlist = search_recursively(config[key], value, subclasses)
-                    if list != None:
+                    if list is not None:
                         return srlist
             return None
 

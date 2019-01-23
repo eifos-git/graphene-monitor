@@ -1,7 +1,4 @@
 from trigger.AbstractTrigger import AbstractTrigger
-IMPLEMENTED_COMPARATORS = ["!=", "unequal", "ue",
-                           "==", "equal", "eq",
-                           ">", "greater", ]
 
 
 class ValueCompare(AbstractTrigger):
