@@ -2,6 +2,8 @@ from monitor import *
 from monitor.trigger.utils import collapse_triggers
 import time
 import yaml
+import os
+import threading
 from monitor_variations.monitor import Monitor
 WAITING_TIME = 2  # in seconds
 
@@ -10,30 +12,109 @@ class Config():
     """Load and save monitor Configuration"""
 
     data = []
+    general_config = {}
 
     @staticmethod
-    def load(monitor_config_files):
+    def _load(monitor_config_files, load_type):
+        """
+        Load the specified configuration into the Config class
+
+        :param monitor_config_files:
+        :param str load_type: data --> monitor config
+                              general --> general config
+        """
         if type(monitor_config_files) == str:
             monitor_config_files = [monitor_config_files]
         for file in monitor_config_files:
             with open(file, 'r') as stream:
-                Config.data.append(yaml.load(stream))
+                if load_type == "data":
+                    Config.data.append(yaml.load(stream))
+                elif load_type == "general":
+                    Config.general_config.update(yaml.load(stream))
+
+    @staticmethod
+    def _get_general_config(config):
+        try:
+            return Config.general_config[config]
+        except KeyError:
+            return None
+
+    @staticmethod
+    def load_monitor_config(monitor_config_files):
+        """Load a arbitrary amount of monitor config files.
+        Put the config Files in monitor/monitor_config_files
+        """
+        os.chdir("./monitor_config_files")
+        Config._load(monitor_config_files, "data")
+        os.chdir("..")
+
+    @staticmethod
+    def load_general_config():
+        """Load general information from monitor/general_config.yaml"""
+        Config._load("general_config.yaml", "general")
+
+    @staticmethod
+    def get_monitor_cycle_length():
+        """
+        :return: monitor cycle length as defined in general_config.yaml as "monitor_interval"
+        """
+        monitor_interval = Config._get_general_config("monitor_interval")
+        if monitor_interval is None:
+            return 2
+        return int(monitor_interval)
+
+    @staticmethod
+    def get_bool_multithreading():
+        multithreading = Config._get_general_config("multithreading")
+        return False if multithreading is None else multithreading
 
 
-
-Config.load(["example-config.yaml"])
-
-if __name__ == '__main__':
-    # TODO: Multiple monitors doesnt work
-
+def setup_monitors():
+    """Every Monitor gets initiated"""
     monitors = []
     for monitor_config in Config.data:
         monitors.append(Monitor(monitor_config["monitor"]))
+    return monitors
+
+
+def start_working(monitors):
+    """Starts the monitor cycle in the given interval
+    Enable multithreading by setting it true in general_config.yaml
+
+    :param monitors: list of Monitor objects
+    """
+
+    if Config.get_bool_multithreading():
+        while True:
+            threads = []
+            for monitor in monitors:
+                threads.append(threading.Thread(target=monitor.do_monitoring))
+
+            for thread in threads:
+                thread.start()
+
+            for thread in threads:
+                thread.join()
+            threads.clear()
+            print("------- Monitor cycle finished. Going to sleep now zZz. ------")
+            time.sleep(Config.get_monitor_cycle_length())
+    else:
+        while True:
+            for monitor in monitors:
+                monitor.do_monitoring()
+            print("------- Monitor cycle finished. Going to sleep now zZz. ------")
+            time.sleep(Config.get_monitor_cycle_length())
+
+
+# TODO: Add additional general configs e.g. multithreading, gui
+Config.load_general_config()
+
+if __name__ == '__main__':
+    Config.load_monitor_config(["example_config.yaml", "group_test.yaml"])
+
+    monitors = setup_monitors()  # Initiates Monitors
 
     print("Amount of monitors added: " + str(len(monitors)))
 
-    while True:
-        for monitor in monitors:
-            monitor.do_monitoring()
-        print("------- Monitor cycle finished. Going to sleep now zZz. ------")
-        time.sleep(2)
+    start_working(monitors)
+

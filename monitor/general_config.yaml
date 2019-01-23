@@ -1,0 +1,2 @@
+monitor_interval: 2 # In seconds - Interval length of every monitor cycle. Doesnt include computatino time
+multithreading: False
