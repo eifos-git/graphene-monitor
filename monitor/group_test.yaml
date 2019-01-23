@@ -3,42 +3,32 @@ monitor:
     source:
         type: http
         url: http://127.0.0.1:5000/
+        error_level: 1 # Define on what level you want to fire in case source doesnt return any data
+                       # it not defined we use all actions instead
 
 
     #Define the values to be monitored in the processing step and its triggers
     triggers:
         list:
-            - UnexpectedResponseCode:
-                type: value_compare
-                "==": 200
-                level: 0 #Use level to map to console action, high levels indicate high priorities. Default = 0
-
             - ErrorResponseCode:
                 type: value_compare
-                greater_or_equal: 400
-                level: 2
-
-            - MultipleTriggerTests:
-                type: value_compare
-                greater_or_equal: 200
-                less_or_equal: 300
+                greater: 390
                 level: 1
-
             - GroupTrigger1:
                 type: value_compare
                 ">": 200
-                level: 1 # All triggers are tested before the first fires. With groups you can link two triggers
+                level: 0 # All triggers are tested before the first fires. With groups you can link two triggers
                         #with different types together. level is maximum level of all members
                 group: 0
 
             - GroupTrigger2:
                 type: value_compare
-                "<": 300
-                level: 1
+                "<": 200
+                level: 0
                 group: 0
 
 
-    #Define action to be executed in case the trigger is met
+    #Define actions to be executed in case the trigger is met
     actions:
         level-redundancy: False #If True all actions with a level smaller that than the
                                #triggerlevel will be executed as well (default=False)

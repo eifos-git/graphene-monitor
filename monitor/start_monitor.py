@@ -20,37 +20,8 @@ class Config():
                 Config.data.append(yaml.load(stream))
 
 
-def do_monitoring(monitor):
-    data = monitor.source.retrieve_data()
-    if data is not None:
-        triggers = []
-        for trigger in monitor.triggers:
-            if trigger.check_condition(data):
-                triggers.append(trigger)
 
-        triggers = collapse_triggers(triggers)  # list of all the triggers with the correct conditon
-        # as trigger[i].get_condition
-        for trigger in triggers:
-            if trigger.get_condition() is False:
-                continue
-            message = trigger.prepare_message()
-            for action in monitor.actions:
-                try:
-                    trigger_level = trigger.get_config("level")
-                except KeyError:
-                    raise KeyError("A level needs to be provided for every trigger")
-                if trigger_level >= action.level:
-                    action.fire(message)
-    else:
-        # Data is None
-        # TODO: Refactoring. Move this to Monitor class
-        for action in monitor.actions:
-            action.fire("Trigger: UnreachableSourceTrigger\n"
-                        "The source {0} is unreachable.".format(monitor.source.config))
-
-
-
-Config.load(["example-config.yaml"])
+Config.load(["example-config.yaml", "group_test.yaml"])
 
 if __name__ == '__main__':
     # TODO: Multiple monitors doesnt work
@@ -63,5 +34,6 @@ if __name__ == '__main__':
 
     while True:
         for monitor in monitors:
-            do_monitoring(monitor)
+            monitor.do_monitoring()
+        print("------- Monitor cycle finished. Going to sleep now zZz. ------")
         time.sleep(2)

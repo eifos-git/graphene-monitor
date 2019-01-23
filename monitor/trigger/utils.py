@@ -4,7 +4,7 @@ def collapse_triggers(triggers):
     because for grouped triggers all its members have to be True.
     """
     for trigger in triggers:
-        if trigger.get_condition():
+        if not trigger.get_condition():
             # Delete all the group members as well
             group = trigger.get_config("group", ignore=True)
             if group is None:

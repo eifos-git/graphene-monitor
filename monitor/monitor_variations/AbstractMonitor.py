@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from source.AbstractSource import AbstractSource
+from monitor.trigger.utils import collapse_triggers
 from trigger.AbstractTrigger import AbstractTrigger
-from action.AbstractAction import AbstractAction
 from utils import get_class_for_source, get_class_for_trigger, get_class_for_action
+
 
 class AbstractMonitor(ABC):
     """Abstract monitor class that is used to set up the monitor as defined in config"""
@@ -14,6 +14,31 @@ class AbstractMonitor(ABC):
         self.source_config = config["source"]
         self.triggers_config = config["triggers"]
         self.actions_config = config["actions"]
+
+    def do_monitoring(self):
+        """Called once every monitor cycle to calculate whether the triggers have to fire or not"""
+        data = self.source.retrieve_data()
+        if data is None:  # Problem with source
+            return self.handle_no_data()
+
+        triggers = []
+        for trigger in self.triggers:
+            if trigger.check_condition(data):
+                triggers.append(trigger)
+        triggers = collapse_triggers(triggers)
+
+        for trigger in triggers:
+            if trigger.get_condition() is False:
+                continue
+            message = trigger.prepare_message()
+            for action in self.actions:
+                try:
+                    trigger_level = trigger.get_config("level")
+                except KeyError:
+                    raise KeyError("A level needs to be provided for every trigger")
+                if trigger_level >= action.level:
+                    action.fire(message)
+
 
     @abstractmethod
     def set_source(self, source):
@@ -68,6 +93,14 @@ class AbstractMonitor(ABC):
             action = action_type(action_cfg)
             #assert(issubclass(type(action), AbstractAction))
             self.actions.append(action)
+
+    @abstractmethod
+    def handle_no_data(self, level=None):
+        """Handles the trigger source not available. """
+        for action in self.actions:
+            if action.level <= level or level is None:
+                action.fire("Trigger: UnreachableSourceTrigger\n"
+                            "The source {0} is unreachable.".format(self.source.config))
 
     def get_config(self, monitor_domain, value, subclasses=None):
         """TODO: This is lazy coding to make it work at the time. There might be some cases in\

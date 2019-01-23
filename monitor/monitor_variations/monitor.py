@@ -18,6 +18,16 @@ class Monitor(AbstractMonitor):
     def add_actions(self, actions):
         super().add_actions(actions=actions)
 
+    def do_monitoring(self):
+        super().do_monitoring()
+
+    def handle_no_data(self):
+        error_level = self.get_config("source", "error_level")
+        if error_level is not None:
+            super().handle_no_data(error_level)
+        else:
+            super().handle_no_data()
+
 
 
 
