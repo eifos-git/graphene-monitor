@@ -21,7 +21,7 @@ class Config():
 
 
 
-Config.load(["example-config.yaml", "group_test.yaml"])
+Config.load(["example-config.yaml"])
 
 if __name__ == '__main__':
     # TODO: Multiple monitors doesnt work

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from monitor.trigger.utils import collapse_triggers
 from trigger.AbstractTrigger import AbstractTrigger
-from utils import get_class_for_source, get_class_for_trigger, get_class_for_action
+from monitor_variations.factory import Factory
 
 
 class AbstractMonitor(ABC):
@@ -46,7 +46,7 @@ class AbstractMonitor(ABC):
         :param source: One of the source defined in
         :type source: str
         """
-        source = get_class_for_source(source)
+        source = Factory.get_class_for_source(source)
         if self.source != None:
             print("only one source can be added. Will be ignored!")
         else:
@@ -68,7 +68,7 @@ class AbstractMonitor(ABC):
 
             for trigger_name, trigger_cfg in trigger.items():
                 trigger_type = self.get_config("triggers", "type", [trigger_name])
-            trigger_type = get_class_for_trigger(trigger_type)
+            trigger_type = Factory.get_class_for_trigger(trigger_type)
             trigger_cfg["name"] = trigger_name # Save the name of the trigger to enable a more meaningful action
             trigger = trigger_type(trigger_cfg)
             assert(issubclass(type(trigger), AbstractTrigger))
@@ -89,7 +89,7 @@ class AbstractMonitor(ABC):
 
             for action_name, action_cfg in action.items():
                 action_type = self.get_config("actions", "type", [action_name])
-            action_type = get_class_for_action(action_type)
+            action_type = Factory.get_class_for_action(action_type)
             action = action_type(action_cfg)
             #assert(issubclass(type(action), AbstractAction))
             self.actions.append(action)
@@ -98,7 +98,7 @@ class AbstractMonitor(ABC):
     def handle_no_data(self, level=None):
         """Handles the trigger source not available. """
         for action in self.actions:
-            if action.level <= level or level is None:
+            if level is None or action.level <= level:
                 action.fire("Trigger: UnreachableSourceTrigger\n"
                             "The source {0} is unreachable.".format(self.source.config))
 
