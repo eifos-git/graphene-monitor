@@ -5,7 +5,6 @@ import yaml
 import os
 import threading
 from monitor_variations.monitor import Monitor
-WAITING_TIME = 2  # in seconds
 
 
 class Config():
@@ -106,7 +105,6 @@ def start_working(monitors):
             time.sleep(Config.get_monitor_cycle_length())
 
 
-# TODO: Add additional general configs e.g. multithreading, gui
 Config.load_general_config()
 
 if __name__ == '__main__':
