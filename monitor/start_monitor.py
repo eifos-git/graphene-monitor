@@ -108,6 +108,7 @@ Config.load_general_config()
 if __name__ == '__main__':
     # TODO COnfig Refactroing ware angemessen
     # TODO Multiple Monitors bug
+    # TODO check compatibility for triggers might be useful for multiple sources
     """Also: 
     group message print
     add BTS Support
