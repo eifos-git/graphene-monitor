@@ -29,7 +29,7 @@ class AbstractTrigger(ABC):
         self.fire_condition_met = False
 
     def get_level(self):
-        self.get_config("level")
+        return self.get_config("level")
 
     @abstractmethod
     def check_condition(self, data):

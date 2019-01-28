@@ -6,11 +6,11 @@ from monitor_variations.factory import Factory
 
 class AbstractMonitor(ABC):
     """Abstract monitor class that is used to set up the monitor as defined in config"""
-    source = None
-    triggers = list()
-    actions = list()
 
     def __init__(self, config):
+        self.source = None
+        self.triggers = list()
+        self.actions = list()
         self.source_config = config["source"]
         self.triggers_config = config["triggers"]
         self.actions_config = config["actions"]
@@ -46,7 +46,7 @@ class AbstractMonitor(ABC):
         :type source: str
         """
         source = Factory.get_class_for_source(source)
-        if self.source != None:
+        if self.source is not None:
             print("only one source can be added. Will be ignored!")
         else:
             self.source = source(self.source_config)
@@ -63,7 +63,6 @@ class AbstractMonitor(ABC):
             if len(trigger) != 1:
                 raise AttributeError("This program doesn't support Triggers nested inside of triggers. "  
                                      "Please remove any list inside of the trigger")
-
             for trigger_name, trigger_cfg in trigger.items():
                 trigger_type = self.get_trigger_type(trigger_name)
             trigger_type = Factory.get_class_for_trigger(trigger_type)
@@ -95,9 +94,7 @@ class AbstractMonitor(ABC):
     def handle_no_data(self, level=None):
         """Handles the trigger source not available.
         :param level: None means that all actions will fire, otherwise it uses the usual level convention"""
-        print("monitor 1:")
-        for trigger in self.triggers:
-            print(trigger.get_config("name"))
+
         for action in self.actions:
             if level is None or action.level <= level:
                 action.fire("Trigger: UnreachableSourceTrigger\n"
