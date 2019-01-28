@@ -1,14 +1,15 @@
 from abc import ABC, abstractmethod
 
-class AbstractAction(ABC):
-    config = None
-    #: If True all actions with a level smaller than the triggerlevel will be executed as well
-    level_redundancy = False
-    level = -1
 
-    def set_config(self, config):
+class AbstractAction(ABC):
+
+    def __init__(self, action_config):
+        self.config = action_config
+        # level_redundancy: If True all actions with a level smaller than the triggerlevel will be executed as well
+        self.set_config()
+
+    def set_config(self):
         """See AbstractSource"""
-        self.config = config
         self.level = self.get_config("level")
         try:
             self.level_redundancy = self.get_config("level-redundancy")

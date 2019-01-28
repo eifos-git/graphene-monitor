@@ -1,8 +1,11 @@
 from abc import ABC, abstractmethod
 
+
 class AbstractTrigger(ABC):
-    config = None
-    fire_condition_met = False
+
+    def __init__(self):
+        self.config = None
+        self.fire_condition_met = False
 
     def set_config(self, config):
         self.config = config

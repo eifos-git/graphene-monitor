@@ -2,7 +2,9 @@ from abc import ABC, abstractmethod
 
 
 class AbstractSource(ABC):
-    config = None # Dict of Config as defined in the config file
+
+    def __init__(self, source_config):
+        self.config = source_config
 
     def set_config(self, config):
         """Called after initialisation of the child class to save the config locally and

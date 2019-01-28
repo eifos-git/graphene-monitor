@@ -18,7 +18,7 @@ monitor:
             - GroupTrigger1.1:
                 type: value_compare
                 ">": 200
-                level: 0 # All triggers are tested before the first fires. With groups you can link two triggers
+                level: 1 # All triggers are tested before the first fires. With groups you can link two triggers
                         #with different types together. level is maximum level of all members
                 group: 0
 

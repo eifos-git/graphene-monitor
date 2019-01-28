@@ -7,7 +7,7 @@ import time
 class Log(AbstractAction):
 
     def __init__(self, config):
-        super().set_config(config)
+        super().__init__(config)
 
     def fire(self, message):
         logging.basicConfig(filename="monitor.log", filemode="w", format="%(message)s")

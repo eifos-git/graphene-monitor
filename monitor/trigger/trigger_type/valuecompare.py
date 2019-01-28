@@ -3,9 +3,9 @@ from trigger.AbstractTrigger import AbstractTrigger
 
 class ValueCompare(AbstractTrigger):
 
-    trigger_conditions = []
-
     def __init__(self, config):
+        super().__init__()
+        self.trigger_conditions = []
         super().set_config(config)
 
     def prepare_message(self):
