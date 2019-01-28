@@ -10,5 +10,4 @@ class Log(AbstractAction):
         super().__init__(config)
 
     def fire(self, message):
-        logging.basicConfig(filename="monitor.log", filemode="w", format="%(message)s")
         logging.warning(get_time() + " - One trigger of your monitor fired \n" + message)

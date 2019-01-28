@@ -1,3 +1,4 @@
 __all__ = [
-    "http"
+    "http",
+    "peerplays_balance"
     ]

@@ -44,7 +44,7 @@ class AbstractTrigger(ABC):
     @abstractmethod
     def prepare_message(self):
         """Message to be sent to action. A more meaningful method should be implemented
-        for a specifig trigger"""
+        for a specific trigger"""
 
         message = ""
 

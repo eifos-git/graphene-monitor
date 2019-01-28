@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from monitor.trigger.utils import collapse_triggers
 from trigger.AbstractTrigger import AbstractTrigger
 from monitor_variations.factory import Factory
+import logging
 
 
 class AbstractMonitor(ABC):

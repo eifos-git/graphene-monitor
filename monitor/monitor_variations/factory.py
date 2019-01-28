@@ -9,9 +9,9 @@ class Factory:
     Binds config string to corresponding class
     """
 
-    source_mappings = {"http": http.Http}
+    source_mappings = {"http": http.Http, "pp-balance": peerplays_balance.PeerplaysBalance}
 
-    trigger_mappings = {"value_compare": valuecompare.ValueCompare}
+    trigger_mappings = {"value_compare": valuecompare.ValueCompare, "data_changed": data_changed.DataChanged}
 
     action_mappings = {"log": log.Log,
                        "console": console.Console,
@@ -40,5 +40,5 @@ class Factory:
         try:
             return Factory.action_mappings[action]
         except KeyError:
-            raise KeyError("The actino specified in config cannot be found. Check for "
+            raise KeyError("The action specified in config cannot be found. Check for "
                            "typos and make sure to add the action to monitor/factory.py")

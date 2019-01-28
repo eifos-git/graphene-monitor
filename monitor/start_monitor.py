@@ -4,6 +4,7 @@ import time
 import yaml
 import os
 import threading
+import logging
 from monitor_variations.monitor import Monitor
 
 
@@ -104,6 +105,7 @@ def start_working(monitors):
 
 
 Config.load_general_config()
+logging.basicConfig(filename="monitor.log", filemode="w", format="%(message)s")
 
 if __name__ == '__main__':
     # TODO COnfig Refactroing ware angemessen
@@ -114,10 +116,10 @@ if __name__ == '__main__':
     add BTS Support
     add database support for a public api 
     Eine source d.h mache triggers und action als liste von einers source -> mehrere sources pro monitor
-    _ überall d.h. trigger.get_level
+    _ uberall d.h. trigger.get_level
     monitor als threads ?"""
 
-    Config.load_monitor_config(["example_config.yaml", "group_test.yaml"])
+    Config.load_monitor_config(["balance_test.yaml"])
 
     monitors = setup_monitors()  # Initiates Monitors
 

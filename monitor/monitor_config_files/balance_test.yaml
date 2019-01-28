@@ -1,0 +1,22 @@
+monitor:
+    source:
+        type: pp-balance
+        error_level: 1
+
+    triggers:
+        list:
+            - LessBalanceTrigger:
+                  type: value_compare
+                  "less": 99939
+                  level: 1
+
+            - MoreBalanceTrigger:
+                  type: value_compare
+                  "greater": 99939
+                  level: 1
+
+    actions:
+        list:
+            - action1:
+                type: console
+                level: 1

@@ -1,3 +1,4 @@
 __all__ = [
-    "valuecompare"
+    "valuecompare",
+    "data_changed"
 ]
