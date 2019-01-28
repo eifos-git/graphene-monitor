@@ -28,6 +28,9 @@ class AbstractTrigger(ABC):
         See trigger/utils/collapse_triggers"""
         self.fire_condition_met = False
 
+    def get_level(self):
+        self.get_config("level")
+
     @abstractmethod
     def check_condition(self, data):
         """Decides, whether the trigger condition is met and therefore if it shoots,

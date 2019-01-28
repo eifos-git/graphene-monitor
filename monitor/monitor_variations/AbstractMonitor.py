@@ -33,7 +33,7 @@ class AbstractMonitor(ABC):
             message = trigger.prepare_message()
             for action in self.actions:
                 try:
-                    trigger_level = trigger.get_config("level")
+                    trigger_level = trigger.get_level()
                 except KeyError:
                     raise KeyError("A level needs to be provided for every trigger")
                 if trigger_level >= action.level:
@@ -65,7 +65,7 @@ class AbstractMonitor(ABC):
                                      "Please remove any list inside of the trigger")
 
             for trigger_name, trigger_cfg in trigger.items():
-                trigger_type = self.get_config("triggers", "type", [trigger_name])
+                trigger_type = self.get_trigger_type(trigger_name)
             trigger_type = Factory.get_class_for_trigger(trigger_type)
             trigger_cfg["name"] = trigger_name # Save the name of the trigger to enable a more meaningful action
             trigger = trigger_type(trigger_cfg)
@@ -86,10 +86,9 @@ class AbstractMonitor(ABC):
                                      "Please remove any list from the action")
 
             for action_name, action_cfg in action.items():
-                action_type = self.get_config("actions", "type", [action_name])
+                action_type = self.get_action_type(action_name)
             action_type = Factory.get_class_for_action(action_type)
             action = action_type(action_cfg)
-            #assert(issubclass(type(action), AbstractAction))
             self.actions.append(action)
 
     @abstractmethod
@@ -104,7 +103,7 @@ class AbstractMonitor(ABC):
                 action.fire("Trigger: UnreachableSourceTrigger\n"
                             "The source {0} is unreachable.".format(self.source.config))
 
-    def get_config(self, monitor_domain, value, subclasses=None):
+    def _get_config(self, monitor_domain, value, subclasses=None):
         """TODO: This is lazy coding to make it work at the time. There might be some cases in\
         which this function fails.
 
@@ -124,7 +123,7 @@ class AbstractMonitor(ABC):
         elif monitor_domain in ["a", "actions"]:
             config = self.actions_config
         else:
-            raise ValueError("monitor_domain hast to be either source, triggers or action")
+            raise ValueError("monitor_domain hast to be either 'source', 'triggers' or 'actions'")
 
         def search_recursively(config, value, subclasses):
             if type(config) is list:
@@ -147,3 +146,12 @@ class AbstractMonitor(ABC):
         sr = search_recursively(config=config, value=value, subclasses=subclasses)
 
         return sr
+
+    def get_trigger_type(self, trigger_name):
+        return self._get_config("triggers", "type", [trigger_name])
+
+    def get_action_type(self, action_name):
+        return self._get_config("actions", "type", [action_name])
+
+    def get_error_level(self):
+        return self._get_config("source", "error_level")

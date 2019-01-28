@@ -3,7 +3,7 @@ monitor:
     source:
         type: http
         url: http://127.0.0.1:5001/
-        error_level: 2
+        error_level: 1
 
 
     #Define the values to be monitored in the processing step and its triggers
