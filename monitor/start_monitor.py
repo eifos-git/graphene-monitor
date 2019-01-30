@@ -130,7 +130,7 @@ if __name__ == '__main__':
     _ uberall d.h. trigger.get_level
     monitor als threads ?"""
 
-    Config.load_monitor_config(["balance_test.yaml", "double_monitor.yaml"])
+    Config.load_monitor_config(["refactoring_test.yaml"])
 
     monitors = setup_monitors()  # Initiates Monitors
 

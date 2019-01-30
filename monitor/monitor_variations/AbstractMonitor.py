@@ -10,18 +10,23 @@ class AbstractMonitor(ABC):
 
     def __init__(self, config, name=None):
         self.name = name
-        self.source = None
+        self.sources = list()
         self.triggers = list()
         self.actions = list()
-        self.source_config = config["source"]
+        self.sources_config = config["sources"]
         self.triggers_config = config["triggers"]
         self.actions_config = config["actions"]
 
     def do_monitoring(self):
         """Called once every monitor cycle to calculate whether the triggers have to fire or not"""
-        data = self.source.retrieve_data()
-        if data is None:  # Problem with source
-            return self.handle_no_data()
+        data = []
+        for source in self.sources():
+            new_data = source.retrieve_data()
+            if new_data is not None:
+                data.append(new_data)
+            else:
+                # TODO is it useful to make this part of source
+                self.handle_no_data(source)
 
         triggers = []
         for trigger in self.triggers:
@@ -49,10 +54,10 @@ class AbstractMonitor(ABC):
         :type source: str
         """
         source = Factory.get_class_for_source(source)
-        if self.source is not None:
+        if self.sources is not None:
             print("only one source can be added. Will be ignored!")
         else:
-            self.source = source(self.source_config)
+            self.sources = source(self.source_config)
 
     @abstractmethod
     def add_triggers(self, triggers):
@@ -98,7 +103,7 @@ class AbstractMonitor(ABC):
             self.actions.append(action)
 
     @abstractmethod
-    def handle_no_data(self, level=None):
+    def handle_no_data(self, source, level=None):
         """Handles the trigger source not available.
         :param level: None means that all actions will fire, otherwise it uses the usual level convention"""
 
@@ -106,7 +111,7 @@ class AbstractMonitor(ABC):
             if level is None or action.get_level() <= level:
                 action.fire("The following monitor fired: {0}\n"
                             "Trigger: UnreachableSourceTrigger\n"
-                            "The source {1} is unreachable.\n".format(self.name, self.source.config))
+                            "The source {1} is unreachable.\n".format(self.name, source))
 
     def _get_config(self, monitor_domain, value, subclasses=None):
         """TODO: This is lazy coding to make it work at the time. There might be some cases in\
@@ -121,14 +126,14 @@ class AbstractMonitor(ABC):
         param subclasse: Has to be a list! In case of ambiguity enter the name of the subclass.
             i.e. subclasses=["trigger1"] if you want the config of trigger 1"""
 
-        if monitor_domain in ["s", "source"]:
-            config = self.source_config
+        if monitor_domain in ["s", "sources"]:
+            config = self.sources_config
         elif monitor_domain in ["t", "triggers"]:
             config = self.triggers_config
         elif monitor_domain in ["a", "actions"]:
             config = self.actions_config
         else:
-            raise ValueError("monitor_domain hast to be either 'source', 'triggers' or 'actions'")
+            raise ValueError("monitor_domain hast to be either 'sources', 'triggers' or 'actions'")
 
         def search_recursively(config, value, subclasses):
             if type(config) is list:
@@ -159,4 +164,4 @@ class AbstractMonitor(ABC):
         return self._get_config("actions", "type", [action_name])
 
     def get_error_level(self):
-        return self._get_config("source", "error_level")
+        return self._get_config("sources", "error_level")

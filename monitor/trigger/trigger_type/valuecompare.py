@@ -23,7 +23,7 @@ class ValueCompare(AbstractTrigger):
         return message
 
     def check_condition(self, data):
-        super().check_condition(data) # add data to config as source_value
+        super().check_condition(data)  # add data to config as source_value
 
         if type(data) not in [int, float, bool]:
             raise TypeError("Value_Compare can only compare int, float or bool")
