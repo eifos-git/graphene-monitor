@@ -1,4 +1,4 @@
-from action.AbstractAction import AbstractAction
+from ..AbstractAction import AbstractAction
 
 
 class Console(AbstractAction):

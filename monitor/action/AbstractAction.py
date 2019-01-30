@@ -27,5 +27,4 @@ class AbstractAction(ABC):
     @abstractmethod
     def fire(self, message):
         """This method is called, whenever some trigger conditions are met"""
-
-
+        pass

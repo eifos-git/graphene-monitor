@@ -1,4 +1,4 @@
-from trigger.AbstractTrigger import AbstractTrigger
+from ..AbstractTrigger import AbstractTrigger
 
 
 class DataChanged(AbstractTrigger):

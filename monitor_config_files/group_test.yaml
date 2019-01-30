@@ -23,7 +23,7 @@ monitor:
                 group: 0
 
             - GroupTrigger2.1:
-                type: value_compare
+                type: has_changed
                 "<": 300
                 level: 1
                 group: 0

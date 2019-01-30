@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
-from monitor.trigger.utils import collapse_triggers
-from trigger.AbstractTrigger import AbstractTrigger
-from monitor_variations.factory import Factory
+from ..trigger.utils import collapse_triggers
+from ..trigger.AbstractTrigger import AbstractTrigger
+from .factory import Factory
+from utils import get_classname_for_config
 import logging
-
+import copy
 
 class AbstractMonitor(ABC):
     """Abstract monitor class that is used to set up the monitor as defined in config"""
@@ -20,7 +21,7 @@ class AbstractMonitor(ABC):
     def do_monitoring(self):
         """Called once every monitor cycle to calculate whether the triggers have to fire or not"""
         data = []
-        for source in self.sources():
+        for source in self.sources:
             new_data = source.retrieve_data()
             if new_data is not None:
                 data.append(new_data)
@@ -30,9 +31,11 @@ class AbstractMonitor(ABC):
 
         triggers = []
         for trigger in self.triggers:
-            if trigger.check_condition(data):
-                triggers.append(trigger)
-        triggers = collapse_triggers(triggers)
+            for dataX in data:
+                trigg = copy.deepcopy(trigger)
+                if trigg.check_condition(dataX):
+                    triggers.append(trigg)
+        #  triggers = collapse_triggers(trigger) Group Support - Not used anymore
 
         for trigger in triggers:
             if trigger.get_condition() is False:
@@ -47,26 +50,34 @@ class AbstractMonitor(ABC):
                 if trigger_level >= action.get_level():
                     action.fire(message)
 
-    @abstractmethod
     def add_sources(self, sources):
         """
         Add sources to the monitor
 
         :param sources: One of the source defined in
         """
-        if type(sources) is not list:
+        if not isinstance(sources, list):
             sources = [sources]
         for source in sources:
             if len(source) != 1:
                 raise AttributeError("Config File wrong. This application does not support lists of sources"
                                      "nested inside of sources.")
-            source = Factory.get_class_for_source(sources)
-            if self.sources is not None:
-                print("only one source can be added. Will be ignored!")
-            else:
-                self.sources = source(self.source_config)
 
-    @abstractmethod
+            try:
+                for source_name, source_cfg in source.items():  # Only iterates once if the config is setup correctly
+                    source_type = self.get_source_type(source_name)
+                src_module, src_class = get_classname_for_config(source_type)
+                module = __import__(src_module, fromlist=[src_class])
+                klass = getattr(module, src_class)
+            except AttributeError:
+                logging.error("Missing or wrong source.class Attribute in config.yaml")
+                continue
+            except TypeError:
+                logging.error("Missing source.class Attribute in config.yaml")
+
+            source = klass(source_cfg)
+            self.sources.append(source)
+
     def add_triggers(self, triggers):
         """Add a list of triggers to the monitro that will be tested every monitor iteration.
 
@@ -78,17 +89,15 @@ class AbstractMonitor(ABC):
             if len(trigger) != 1:
                 raise AttributeError("This program doesn't support Triggers nested inside of triggers. "  
                                      "Please remove any list inside of the trigger")
-            for trigger_name, trigger_cfg in trigger.items():
+            for trigger_name, trigger_cfg in trigger.items():  # Only iterates once if the config is setup correctly
                 trigger_type = self.get_trigger_type(trigger_name)
             trigger_type = Factory.get_class_for_trigger(trigger_type)
             if trigger_type is None:
                 continue
             trigger_cfg["name"] = trigger_name  # Save the name of the trigger to enable a more meaningful action
             trigger = trigger_type(trigger_cfg)
-            assert(issubclass(type(trigger), AbstractTrigger))
             self.triggers.append(trigger)
 
-    @abstractmethod
     def add_actions(self, actions):
         """Add all the actions defined in the config file as a list to the monitor class and initializes
         those action classes
@@ -101,7 +110,7 @@ class AbstractMonitor(ABC):
                 raise AttributeError("This program doesn't support multiple actions within one action. "
                                      "Please remove any list from the action")
 
-            for action_name, action_cfg in action.items():
+            for action_name, action_cfg in action.items():  # Only iterates once if the config is setup correctly
                 action_type = self.get_action_type(action_name)
             action_type = Factory.get_class_for_action(action_type)
             if action_type is None:
@@ -109,7 +118,6 @@ class AbstractMonitor(ABC):
             action = action_type(action_cfg)
             self.actions.append(action)
 
-    @abstractmethod
     def handle_no_data(self, source, level=None):
         """Handles the trigger source not available.
         :param level: None means that all actions will fire, otherwise it uses the usual level convention"""
@@ -167,6 +175,9 @@ class AbstractMonitor(ABC):
         sr = search_recursively(config=config, value=value, subclasses=subclasses)
 
         return sr
+
+    def get_source_type(self, source_name):
+        return self._get_config("sources", "class", [source_name])
 
     def get_trigger_type(self, trigger_name):
         return self._get_config("triggers", "type", [trigger_name])

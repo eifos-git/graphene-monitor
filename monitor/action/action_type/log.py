@@ -1,5 +1,4 @@
-from action.AbstractAction import AbstractAction
-from monitor.action.utils import get_time
+from ..AbstractAction import AbstractAction
 import logging
 import time
 
@@ -10,4 +9,4 @@ class Log(AbstractAction):
         super().__init__(config)
 
     def fire(self, message):
-        logging.warning(get_time() + " - One trigger of your monitor fired \n" + message)
+        print("fire")

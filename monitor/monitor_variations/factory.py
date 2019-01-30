@@ -1,7 +1,7 @@
 """Maps all the config values to their classes"""
-from source.source_type import *
-from trigger.trigger_type import *
-from action.action_type import *
+from ..source.source_type import *
+from ..trigger.trigger_type import *
+from ..action.action_type import *
 import logging
 
 

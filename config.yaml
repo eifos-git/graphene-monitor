@@ -1,19 +1,20 @@
-monitor:
+monitor1:
     sources:
         - localhost_response:
-            type: http
+            class: monitor.source.source_type.http.Http
             url: http://127.0.0.1:5000
         - pp_mischa_balance:
-            type: pp-balance
+            class: monitor.source.source_type.PeerplaysBalance
             account_name: mischa
             symbol: TEST
 
     triggers:
         - RichUserTrigger:
+            module: monitor.trigger......
             type: value_compare
             source: mischas_pp_balance
             greater: 99909
-            level: 1
+            level: 2
 
         - ErrorResponseCodeTrigger:
             type: value_compare
@@ -22,10 +23,6 @@ monitor:
             level: 2
 
     actions:
-        - action1:
-            type: console
-            level: 1
-
         - action2:
             type: console
             level: 2

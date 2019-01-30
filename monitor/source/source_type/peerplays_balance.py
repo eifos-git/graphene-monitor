@@ -1,7 +1,8 @@
 from peerplays.account import Account
 from graphenecommon.exceptions import AssetDoesNotExistsException, AccountDoesNotExistsException
-from source.AbstractSource import AbstractSource
+from ..AbstractSource import AbstractSource
 import logging
+
 
 class PeerplaysBalance(AbstractSource):
     def __init__(self, source_config):

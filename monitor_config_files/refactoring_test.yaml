@@ -1,0 +1,31 @@
+monitor:
+    sources:
+        - localhost_response:
+            type: http
+            url: http://127.0.0.1:5000
+        - pp_mischa_balance:
+            type: pp-balance
+            account_name: mischa
+            symbol: TEST
+
+    triggers:
+        - RichUserTrigger:
+            type: value_compare
+            source: mischas_pp_balance
+            greater: 99909
+            level: 1
+
+        - ErrorResponseCodeTrigger:
+            type: value_compare
+            source: localhost_response
+            greater_or_equal: 300
+            level: 2
+
+    actions:
+        - action1:
+            type: console  #stdout, stderr, log, mail, telegram, slack
+            level: 1
+
+        - action2:
+            type: console
+            level: 2
