@@ -2,8 +2,8 @@ monitor:
     #Define the preprocessing source
     source:
         type: http
-        url: http://127.0.0.1:5000/
-        error_level: 1 # Define on what level you want to fire in case source doesnt return any data
+        - url: http://127.0.0.1:5000/
+        - error_level: 1 # Define on what level you want to fire in case source doesnt return any data
                        # it not defined we use all actions instead
 
 

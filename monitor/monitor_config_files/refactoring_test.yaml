@@ -17,6 +17,7 @@ monitor:
 
         - ErrorResponseCodeTrigger:
             type: value_compare
+            source: localhost_response
             greater_or_equal: 300
             level: 2
 

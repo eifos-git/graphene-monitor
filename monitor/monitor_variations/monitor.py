@@ -5,12 +5,13 @@ class Monitor(AbstractMonitor):
 
     def __init__(self, config, name=None):
         super().__init__(config, name)
-        self.set_source(self._get_config("sources", "type"))
-        self.add_triggers(self._get_config("triggers", "list"))
-        self.add_actions(self._get_config("actions", "list"))
+        self.add_sources(self._get_config("sources"))
+        self.add_triggers(self._get_config("triggers"))
+        self.add_actions(self._get_config("actions"))
 
-    def set_source(self, source):
-        super().set_source(source=source)
+    def add_sources(self, sources):
+        #super().add_sources(sources=sources)
+        pass
 
     def add_triggers(self, triggers):
         super().add_triggers(triggers=triggers)

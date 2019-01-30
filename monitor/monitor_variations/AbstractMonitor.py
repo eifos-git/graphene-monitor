@@ -48,16 +48,23 @@ class AbstractMonitor(ABC):
                     action.fire(message)
 
     @abstractmethod
-    def set_source(self, source):
+    def add_sources(self, sources):
         """
-        :param source: One of the source defined in
-        :type source: str
+        Add sources to the monitor
+
+        :param sources: One of the source defined in
         """
-        source = Factory.get_class_for_source(source)
-        if self.sources is not None:
-            print("only one source can be added. Will be ignored!")
-        else:
-            self.sources = source(self.source_config)
+        if type(sources) is not list:
+            sources = [sources]
+        for source in sources:
+            if len(source) != 1:
+                raise AttributeError("Config File wrong. This application does not support lists of sources"
+                                     "nested inside of sources.")
+            source = Factory.get_class_for_source(sources)
+            if self.sources is not None:
+                print("only one source can be added. Will be ignored!")
+            else:
+                self.sources = source(self.source_config)
 
     @abstractmethod
     def add_triggers(self, triggers):
@@ -113,7 +120,7 @@ class AbstractMonitor(ABC):
                             "Trigger: UnreachableSourceTrigger\n"
                             "The source {1} is unreachable.\n".format(self.name, source))
 
-    def _get_config(self, monitor_domain, value, subclasses=None):
+    def _get_config(self, monitor_domain, value=None, subclasses=None):
         """TODO: This is lazy coding to make it work at the time. There might be some cases in\
         which this function fails.
 
@@ -123,6 +130,7 @@ class AbstractMonitor(ABC):
         param monitor_domain: either source/triggers/action or s/t/a
         param value: value to be searched for. If the value is defined multiple times for one monitor,
             i.e. level use the parameter subclasses
+            Value can be non to indicate that you want the config for a whole domain
         param subclasse: Has to be a list! In case of ambiguity enter the name of the subclass.
             i.e. subclasses=["trigger1"] if you want the config of trigger 1"""
 
@@ -152,6 +160,9 @@ class AbstractMonitor(ABC):
                     if list is not None:
                         return srlist
             return None
+
+        if value is None:
+            return config
 
         sr = search_recursively(config=config, value=value, subclasses=subclasses)
 
