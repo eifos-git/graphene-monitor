@@ -1,6 +1,8 @@
 monitor:
     source:
         type: pp-balance
+        account_name: mischa
+        symbol: TEST
         error_level: 1
 
     triggers:

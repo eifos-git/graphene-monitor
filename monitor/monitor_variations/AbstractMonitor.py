@@ -8,7 +8,8 @@ import logging
 class AbstractMonitor(ABC):
     """Abstract monitor class that is used to set up the monitor as defined in config"""
 
-    def __init__(self, config):
+    def __init__(self, config, name=None):
+        self.name = name
         self.source = None
         self.triggers = list()
         self.actions = list()
@@ -31,13 +32,14 @@ class AbstractMonitor(ABC):
         for trigger in triggers:
             if trigger.get_condition() is False:
                 continue
-            message = trigger.prepare_message()
+            message = "The following Monitor fired: {0}\n".format(self.name) + str(trigger.prepare_message())
+            try:
+                trigger_level = trigger.get_level()
+            except KeyError:
+                logging.error("No level provided for trigger, therefore it never fires!")
+                continue
             for action in self.actions:
-                try:
-                    trigger_level = trigger.get_level()
-                except KeyError:
-                    raise KeyError("A level needs to be provided for every trigger")
-                if trigger_level >= action.level:
+                if trigger_level >= action.get_level():
                     action.fire(message)
 
     @abstractmethod
@@ -67,7 +69,9 @@ class AbstractMonitor(ABC):
             for trigger_name, trigger_cfg in trigger.items():
                 trigger_type = self.get_trigger_type(trigger_name)
             trigger_type = Factory.get_class_for_trigger(trigger_type)
-            trigger_cfg["name"] = trigger_name # Save the name of the trigger to enable a more meaningful action
+            if trigger_type is None:
+                continue
+            trigger_cfg["name"] = trigger_name  # Save the name of the trigger to enable a more meaningful action
             trigger = trigger_type(trigger_cfg)
             assert(issubclass(type(trigger), AbstractTrigger))
             self.triggers.append(trigger)
@@ -82,12 +86,14 @@ class AbstractMonitor(ABC):
             actions = [actions]
         for action in actions:
             if len(action) != 1:
-                raise AttributeError("This program doesn't supprort multiple actions within one action. "
+                raise AttributeError("This program doesn't support multiple actions within one action. "
                                      "Please remove any list from the action")
 
             for action_name, action_cfg in action.items():
                 action_type = self.get_action_type(action_name)
             action_type = Factory.get_class_for_action(action_type)
+            if action_type is None:
+                continue
             action = action_type(action_cfg)
             self.actions.append(action)
 
@@ -97,9 +103,10 @@ class AbstractMonitor(ABC):
         :param level: None means that all actions will fire, otherwise it uses the usual level convention"""
 
         for action in self.actions:
-            if level is None or action.level <= level:
-                action.fire("Trigger: UnreachableSourceTrigger\n"
-                            "The source {0} is unreachable.".format(self.source.config))
+            if level is None or action.get_level() <= level:
+                action.fire("The following monitor fired: {0}\n"
+                            "Trigger: UnreachableSourceTrigger\n"
+                            "The source {1} is unreachable.\n".format(self.name, self.source.config))
 
     def _get_config(self, monitor_domain, value, subclasses=None):
         """TODO: This is lazy coding to make it work at the time. There might be some cases in\

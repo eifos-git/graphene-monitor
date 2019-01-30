@@ -73,8 +73,19 @@ def setup_monitors():
     """Every Monitor gets initiated"""
     monitors = []
     for monitor_config in Config.data:
-        monitors.append(Monitor(monitor_config["monitor"]))
+        # In case multiple monitors are added into one config File:
+        monitor_keys = get_monitor_keys(monitor_config)
+        for monitor in monitor_keys:
+            monitors.append(Monitor(monitor_config[monitor], name=monitor))
     return monitors
+
+
+def get_monitor_keys(monitor_config):
+    """Return the keys of all monitors in a config file as a list of str"""
+    monitor_names = []
+    for name, monitor in monitor_config.items():
+        monitor_names.append(name)
+    return monitor_names
 
 
 def start_working(monitors):
@@ -119,7 +130,7 @@ if __name__ == '__main__':
     _ uberall d.h. trigger.get_level
     monitor als threads ?"""
 
-    Config.load_monitor_config(["balance_test.yaml"])
+    Config.load_monitor_config(["balance_test.yaml", "double_monitor.yaml"])
 
     monitors = setup_monitors()  # Initiates Monitors
 

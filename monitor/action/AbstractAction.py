@@ -21,6 +21,9 @@ class AbstractAction(ABC):
         """See AbstractSource"""
         return self.config[config_title]
 
+    def get_level(self):
+        return self.level
+
     @abstractmethod
     def fire(self, message):
         """This method is called, whenever some trigger conditions are met"""

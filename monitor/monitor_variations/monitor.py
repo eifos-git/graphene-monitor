@@ -3,8 +3,8 @@ from monitor_variations.AbstractMonitor import AbstractMonitor
 
 class Monitor(AbstractMonitor):
 
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self, config, name=None):
+        super().__init__(config, name)
         self.set_source(self._get_config("source", "type"))
         self.add_triggers(self._get_config("triggers", "list"))
         self.add_actions(self._get_config("actions", "list"))

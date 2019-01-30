@@ -2,6 +2,7 @@
 from source.source_type import *
 from trigger.trigger_type import *
 from action.action_type import *
+import logging
 
 
 class Factory:
@@ -31,8 +32,9 @@ class Factory:
         try:
             return Factory.trigger_mappings[trigger]
         except KeyError:
-            raise KeyError("The trigger specified in config cannot be found. Check for "
-                           "typos and make sure to add the trigger to monitor/factory.py")
+            logging.error("The trigger <{0}> in config cannot be found. Check for typos and "
+                          "make sure that the trigger has been added to monitor/factory.py".format(trigger))
+            return None
 
 
     @staticmethod
@@ -40,5 +42,6 @@ class Factory:
         try:
             return Factory.action_mappings[action]
         except KeyError:
-            raise KeyError("The action specified in config cannot be found. Check for "
-                           "typos and make sure to add the action to monitor/factory.py")
+            logging.error("The action <{0}> in config cannot be found. Check for typos and make sure"
+                          "that the action has been added to monitor/factory.py".format(action))
+            return None

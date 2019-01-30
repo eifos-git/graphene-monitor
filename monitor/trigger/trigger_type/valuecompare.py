@@ -11,17 +11,15 @@ class ValueCompare(AbstractTrigger):
     def prepare_message(self):
         data = self.get_config("source_value")
         message = ""
-        message += "Trigger: {0} fired!\n".format(self.get_config("name"))
-        message += "Data returned is {0}\n".format(data)
-        message += "Trigger conditions:\n"
+        message += "Trigger: {0}\n".format(self.get_config("name"))
+        message += "Data: {0}\n".format(data)
+        message += "Conditions:\n"
         for (key, value) in self.config.items():
             cfunc = evaluate_trigger_condition(key, value, data)
             if cfunc is True:
                 message += "   - Data {0} {1}\n".format(key, value)
             elif cfunc is None:
                 pass  # Config data not used for the message
-            else:
-                raise ValueError("This should not happen")
         return message
 
     def check_condition(self, data):
