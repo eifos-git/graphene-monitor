@@ -1,5 +1,3 @@
-
-import click
 import time
 import yaml
 import os

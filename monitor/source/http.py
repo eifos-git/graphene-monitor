@@ -1,4 +1,4 @@
-from ..AbstractSource import AbstractSource
+from . import AbstractSource
 import requests
 
 

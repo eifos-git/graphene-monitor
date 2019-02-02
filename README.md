@@ -57,4 +57,5 @@ Event höchstens 120 inplay
 DNS tets
 graphene healthchecker config 
 change console to stdout
+add a default way for easier classes to be added
 

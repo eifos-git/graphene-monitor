@@ -72,11 +72,15 @@ class AbstractMonitor(ABC):
                 source_cfg["name"] = src_class
                 source = klass(source_cfg)
                 self.sources.append(source)
+            except ModuleNotFoundError:
+                logging.error("Unable to find the Module you specified for source.")
+                continue
             except AttributeError:
                 logging.error("Missing or wrong source.class Attribute in config.yaml")
                 continue
             except TypeError:
                 logging.error("Missing source.class Attribute in config.yaml")
+                continue
 
 
     def add_triggers(self, triggers):
@@ -99,6 +103,9 @@ class AbstractMonitor(ABC):
                 trigger_cfg["name"] = trigger_name  # Save the name of the trigger to enable a more meaningful action
                 trigger = klass(trigger_cfg)
                 self.triggers.append(trigger)
+            except ModuleNotFoundError:
+                logging.error("Unable to find the Module you specified for trigger.")
+                continue
             except AttributeError:
                 logging.error("Missing or wrong trigger.class Attribute in config.yaml")
                 continue
@@ -125,6 +132,9 @@ class AbstractMonitor(ABC):
                 action_cfg["name"] = action_class  # Save the name of the trigger to enable a more meaningful action
                 action = klass(action_cfg)
                 self.actions.append(action)
+            except ModuleNotFoundError:
+                logging.error("Unable to find the Module you specified for trigger.")
+                continue
             except AttributeError:
                 logging.error("Missing or wrong action.class Attribute in config.yaml")
                 continue
