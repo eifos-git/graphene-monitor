@@ -69,54 +69,67 @@ class AbstractMonitor(ABC):
                 src_module, src_class = get_classname_for_config(source_type)
                 module = __import__(src_module, fromlist=[src_class])
                 klass = getattr(module, src_class)
+                source_cfg["name"] = src_class
+                source = klass(source_cfg)
+                self.sources.append(source)
             except AttributeError:
                 logging.error("Missing or wrong source.class Attribute in config.yaml")
                 continue
             except TypeError:
                 logging.error("Missing source.class Attribute in config.yaml")
 
-            source = klass(source_cfg)
-            self.sources.append(source)
 
     def add_triggers(self, triggers):
         """Add a list of triggers to the monitro that will be tested every monitor iteration.
 
         :param triggers: List of triggers defined in the config file.
         """
-        if type(triggers) is not list:
+        if not isinstance(triggers, list):
             triggers = [triggers]
         for trigger in triggers:
             if len(trigger) != 1:
                 raise AttributeError("This program doesn't support Triggers nested inside of triggers. "  
                                      "Please remove any list inside of the trigger")
-            for trigger_name, trigger_cfg in trigger.items():  # Only iterates once if the config is setup correctly
-                trigger_type = self.get_trigger_type(trigger_name)
-            trigger_type = Factory.get_class_for_trigger(trigger_type)
-            if trigger_type is None:
+            try:
+                for trigger_name, trigger_cfg in trigger.items():  # Only iterates once if the config is setup correctly
+                    trigger_type = self.get_trigger_type(trigger_name)  # path to the class of our trigger
+                trg_module, trg_class = get_classname_for_config(trigger_type)
+                module = __import__(trg_module, fromlist=[trg_class])
+                klass = getattr(module, trg_class)
+                trigger_cfg["name"] = trigger_name  # Save the name of the trigger to enable a more meaningful action
+                trigger = klass(trigger_cfg)
+                self.triggers.append(trigger)
+            except AttributeError:
+                logging.error("Missing or wrong trigger.class Attribute in config.yaml")
                 continue
-            trigger_cfg["name"] = trigger_name  # Save the name of the trigger to enable a more meaningful action
-            trigger = trigger_type(trigger_cfg)
-            self.triggers.append(trigger)
+            except TypeError:
+                logging.error("Missing trigger.class Attribute in config.yaml")
+
 
     def add_actions(self, actions):
         """Add all the actions defined in the config file as a list to the monitor class and initializes
         those action classes
         """
-
-        if type(actions) is not list:
+        if not isinstance(actions, list):
             actions = [actions]
         for action in actions:
             if len(action) != 1:
-                raise AttributeError("This program doesn't support multiple actions within one action. "
-                                     "Please remove any list from the action")
-
-            for action_name, action_cfg in action.items():  # Only iterates once if the config is setup correctly
-                action_type = self.get_action_type(action_name)
-            action_type = Factory.get_class_for_action(action_type)
-            if action_type is None:
+                raise AttributeError("This program doesn't support Triggers nested inside of triggers. "  
+                                     "Please remove any list inside of the trigger")
+            try:
+                for action_name, action_cfg in action.items():  # Only iterates once if the config is setup correctly
+                    action_type = self.get_action_type(action_name)  # path to the class of our trigger
+                action_module, action_class = get_classname_for_config(action_type)
+                module = __import__(action_module, fromlist=[action_class])
+                klass = getattr(module, action_class)
+                action_cfg["name"] = action_class  # Save the name of the trigger to enable a more meaningful action
+                action = klass(action_cfg)
+                self.actions.append(action)
+            except AttributeError:
+                logging.error("Missing or wrong action.class Attribute in config.yaml")
                 continue
-            action = action_type(action_cfg)
-            self.actions.append(action)
+            except TypeError:
+                logging.error("Missing action.class Attribute in config.yaml")
 
     def handle_no_data(self, source, level=None):
         """Handles the trigger source not available.
@@ -180,10 +193,10 @@ class AbstractMonitor(ABC):
         return self._get_config("sources", "class", [source_name])
 
     def get_trigger_type(self, trigger_name):
-        return self._get_config("triggers", "type", [trigger_name])
+        return self._get_config("triggers", "class", [trigger_name])
 
     def get_action_type(self, action_name):
-        return self._get_config("actions", "type", [action_name])
+        return self._get_config("actions", "class", [action_name])
 
     def get_error_level(self):
         return self._get_config("sources", "error_level")

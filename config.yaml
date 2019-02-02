@@ -10,19 +10,23 @@ monitor1:
 
     triggers:
         - RichUserTrigger:
-            module: monitor.trigger......
-            type: value_compare
+            class: monitor.trigger.trigger_type.valuecompare.ValueCompare
             source: mischas_pp_balance
             greater: 99909
             level: 2
 
         - ErrorResponseCodeTrigger:
-            type: value_compare
+            class: monitor.trigger.trigger_type.valuecompare.ValueCompare
             source: localhost_response
             greater_or_equal: 300
             level: 2
 
+        - ExpectedResponseCode:
+            class: monitor.trigger.trigger_type.valuecompare.ValueCompare
+            equal: 200
+            level: 2
+
     actions:
         - action2:
-            type: console
+            class: monitor.action.action_type.console.Console
             level: 2

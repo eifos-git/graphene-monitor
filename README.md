@@ -56,4 +56,5 @@ Timestamp bock älter als 15 sec
 Event höchstens 120 inplay
 DNS tets
 graphene healthchecker config 
+change console to stdout
 
