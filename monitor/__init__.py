@@ -4,7 +4,7 @@ import os
 import threading
 import logging
 from .trigger.utils import collapse_triggers
-from .monitor_variations.monitor import Monitor
+from .monitor import Monitor
 
 
 class Config():
