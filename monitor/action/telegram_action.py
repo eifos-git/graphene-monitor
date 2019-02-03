@@ -1,4 +1,4 @@
-from monitor.action.AbstractAction import AbstractAction
+from . import AbstractAction
 import telegram_send
 
 

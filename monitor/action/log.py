@@ -1,4 +1,4 @@
-from ..AbstractAction import AbstractAction
+from . import AbstractAction
 import logging
 import time
 

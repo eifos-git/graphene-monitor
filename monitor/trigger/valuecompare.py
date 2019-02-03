@@ -1,4 +1,4 @@
-from ..AbstractTrigger import AbstractTrigger
+from . import AbstractTrigger
 
 
 class ValueCompare(AbstractTrigger):

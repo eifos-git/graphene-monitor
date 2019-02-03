@@ -1,5 +1,4 @@
-from ..AbstractAction import AbstractAction
-
+from . import AbstractAction
 
 class Console(AbstractAction):
     """Console is a type of action that only prints messages to the console"""

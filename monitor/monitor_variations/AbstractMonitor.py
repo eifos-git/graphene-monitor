@@ -1,7 +1,4 @@
 from abc import ABC, abstractmethod
-from ..trigger.utils import collapse_triggers
-from ..trigger.AbstractTrigger import AbstractTrigger
-from .factory import Factory
 from utils import get_classname_for_config
 import logging
 import copy
@@ -104,13 +101,13 @@ class AbstractMonitor(ABC):
                 trigger = klass(trigger_cfg)
                 self.triggers.append(trigger)
             except ModuleNotFoundError:
-                logging.error("Unable to find the Module you specified for trigger.")
+                logging.error("Unable to find the Module you specified for trigger " + trigger_name)
                 continue
             except AttributeError:
-                logging.error("Missing or wrong trigger.class Attribute in config.yaml")
+                logging.error("Missing or wrong trigger.class Attribute in " + trigger_name)
                 continue
             except TypeError:
-                logging.error("Missing trigger.class Attribute in config.yaml")
+                logging.error("Missing trigger.class Attribute in " + trigger_name)
 
 
     def add_actions(self, actions):
