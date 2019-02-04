@@ -4,7 +4,7 @@ monitor1:
             class: monitor.source.http.Http
             url: http://127.0.0.1:5000
         - pp_mischa_balance:
-            class: monitor.source.source_type.PeerplaysBalance
+            class: monitor.source.peerplays_balance.PeerplaysBalance
             account_name: mischa
             symbol: TEST
 

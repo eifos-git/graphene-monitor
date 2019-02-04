@@ -7,7 +7,7 @@ from .trigger.utils import collapse_triggers
 from .monitor import Monitor
 
 
-class Config():
+class Config:
     """Load and save monitor Configuration"""
 
     data = []

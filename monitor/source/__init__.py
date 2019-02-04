@@ -1,27 +1,65 @@
 from abc import ABC, abstractmethod
+import logging
 
 
 class AbstractSource(ABC):
 
-    def __init__(self, source_config):
+    def __init__(self, source_config, source_name):
         self.config = source_config
+        self._source_name = source_name
 
-    def set_config(self, config):
-        """Called after initialisation of the child class to save the config locally and
-        make get_config usable
+    # set config(self, config) deleted
+    def _get_config_value(self, key, ignore_key_error=False):
+        """Method to retrieve the value of the sources config with a given key.
+        If ignore key error is set to True any type of key error is ignored and therefore
+        this method can be used as a way to check if a config value already exists
+
+        :param key: key of the value in config
+        :param ignore_key_error: Decide how to handle a key error
+        :return: Either value if key is found or None if it isn't
         """
-        self.config = config
+        try:
+            value = self.config[key]
+        except KeyError:
+            if ignore_key_error:
+                return None
+            else:
+                logging.error("Key Error in AbstractSource._get_config_value for the key {0}".format(key))
+                return None
+        return value
 
-    def get_config(self, config_title):
-        """Get configuration of this Source
+    def add_config(self, key, value, overwrite=False):
+        """Use this method to add a new key or change the config of your source Object.
 
-        :param config_title: title of a variable in config i.e. "type"
-        :return: value of config_title
+        :param key: config key, if already in use the value is only overwritten is overwrite is True
+        :param value: new value of the key
+        :param overwrite: If true it can be used to overwrite existing settings. Otherwise this function
+            will do nothing
         """
-        return self.config[config_title]
+        value_for_key = self._get_config_value(key, ignore_key_error=True)
+        if value_for_key is None:
+            # key doesn't exist yet
+            self.config[key] = value
+            if overwrite is True:
+                # Might indicate wrong usage
+                logging.log("AbstractSource.add_config(): Overwrite is True, but value doesn't exist yet")
+            return
+        if overwrite is True:
+            self.config[key] = value
+            return
+        logging.error("Overwrite a value in source.config that already exists is not possible if you don't "
+                      "specifically allow in in the method call.")
+
+    def get_source_name(self):
+        """Returns the source name. Can be used to create more meaningful and easier to understand
+        error messages.
+
+        :return: source name as defined in config
+        """
+        return self._source_name
 
     @abstractmethod
     def retrieve_data(self):
-        """Impemented by the subclasses. The Function that gets called every monitor iteration to
-        retrive the new data to be checked by trigger
+        """Implemented by the subclasses. The Function that gets called every monitor iteration to
+        retrieve the new data that is to be checked by trigger
         """

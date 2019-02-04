@@ -5,22 +5,23 @@ import logging
 
 
 class PeerplaysBalance(AbstractSource):
-    def __init__(self, source_config):
-        super().__init__(source_config)
+    def __init__(self, source_config, source_name):
+        super().__init__(source_config, source_name)
         self.asset = self.get_asset()
         self.account_name = self.get_account_name()
 
     def get_asset(self):
-        try:
-            return self.get_config("symbol")
-        except KeyError:
-            logging.error("Key 'symbol' not found in the config file")
+        asset = self._get_config_value("symbol")
+        if asset is None:
+            logging.error("Missing 'symbol' key in config of {0}".format(self.get_source_name()))
+            return None
+        return asset
 
     def get_account_name(self):
-        try:
-            return self.get_config("account_name")
-        except KeyError:
-            logging.error("Key 'account_name' not found the config file")
+        account_name = self._get_config_value("account_name")
+        if account_name is None:
+            logging.error("Missing 'account_name' key in config of {0}".format(self.get_source_name()))
+        return account_name
 
     def retrieve_data(self):
         b = None
@@ -34,4 +35,6 @@ class PeerplaysBalance(AbstractSource):
             logging.error("Asset does not exist: " + str(e))
         except AccountDoesNotExistsException as e:
             logging.error("Account does not exist: " + str(e))
+        except ValueError as e:
+            logging.error(str(e) + " -- This usually happens when Peerplays is not set up correctly.")
         return b
