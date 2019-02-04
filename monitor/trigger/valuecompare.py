@@ -4,8 +4,7 @@ from . import AbstractTrigger
 class ValueCompare(AbstractTrigger):
 
     def __init__(self, config):
-        super().__init__()
-        super().set_config(config)
+        super().__init__(config)
 
     def prepare_message(self):
         data = self.get_config("source_value")

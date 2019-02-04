@@ -1,2 +1,2 @@
-monitor_interval: 1 # In seconds - Interval length of every monitor cycle. Doesnt include computatino time
+monitor_interval: 3 # In seconds - Interval length of every monitor cycle. Doesnt include computatino time
 multithreading: False

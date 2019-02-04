@@ -1,14 +1,21 @@
 from abc import ABC, abstractmethod
+import time
 
 
 class AbstractTrigger(ABC):
 
-    def __init__(self):
-        self.config = None
-        self.fire_condition_met = False
-
-    def set_config(self, config):
+    def __init__(self, config):
         self.config = config
+        self.fire_condition_met = False
+        self._last_time_fired = None
+        self.downtime = self._set_downtime()
+
+    def _set_downtime(self):
+        downtime = self.get_config("downtime", ignore=True)
+        if downtime is None:
+            downtime = 0
+            # TODO: downtime = Config.get_trigger_downtime()
+        return downtime
 
     def get_config(self, value, ignore=False):
         """
@@ -23,12 +30,39 @@ class AbstractTrigger(ABC):
                 return None
         return self.config[value]
 
+    def get_downtime(self):
+        return self._downtime
+
     def get_condition(self):
         return self.fire_condition_met
 
+    def get_last_time_fired(self):
+        return self._last_time_fired
+
+    def update_last_time_fired(self):
+        self._last_time_fired = time.time()
+
+    def fired_recently(self):
+        """Checks the last time the trigger fired and if it happened too recently the trigger
+        condition is simply set to False. Otherwise function does nothing.
+        """
+        if not self.get_condition():
+            return
+        last_fire = self.get_last_time_fired()
+        if last_fire is None:
+            self.update_last_time_fired()
+            return
+        if (time.time() - last_fire) <= (self.get_last_time_fired() * 60):
+            self.deactivate_trigger()
+        else:
+            self.update_last_time_fired()
+
+
+
     def deactivate_trigger(self):
         """The trigger can be disabled after its evaluation to enable group support.
-        See trigger/utils/collapse_triggers"""
+        Group Support is disabled and might be removed in the future.
+        """
         self.fire_condition_met = False
 
     def get_level(self):
@@ -39,7 +73,6 @@ class AbstractTrigger(ABC):
         """Decides, whether the trigger condition is met and therefore if it shoots,
         """
         self.config["source_value"] = data
-
 
     @abstractmethod
     def prepare_message(self):

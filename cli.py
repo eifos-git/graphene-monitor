@@ -1,21 +1,34 @@
 import click
+import logging
 from monitor import Config, start_working, setup_monitors
+
 
 @click.command()
 @click.option("--config", type=str, default="config.yaml")
-def main(config):
-    # TODO COnfig Refactroing ware angemessen
-    # TODO Multiple Monitors bug
+@click.option("--monitor_interval", type=int, default=2)
+@click.option("--multithreading", type=bool, default=False)
+@click.option("--downtime", type=int, default=1)
+def main(**kwargs):
+    # TODO: Debug downtime length. It doesnt work yet. _last_time_fired is always None
     # TODO check compatibility for triggers might be useful for multiple sources
+    # TODO write some nice test cases. AbstractTrigger.fired_recently() might have caused trouble
     """Also:
-    group message print
-    add BTS Support
     add database support for a public api
-    Eine source d.h mache triggers und action als liste von einers source -> mehrere sources pro monitor
-    _ uberall d.h. trigger.get_level
-    monitor als threads ?"""
+    A method to make the class names shorter might be useful
+    Interval trigger
+    Add triggers.check_compatability
+    Timestamp bock älter als 15 sec
+    Event höchstens 120 inplay
+    DNS tets
+    graphene healthchecker config
+    change console to stdout
+    """
 
-    Config.load_monitor_config(config)
+    Config.add_general_config(kwargs)
+
+    log = logging.getLogger(__name__)
+
+    Config.load_monitor_config()
 
     monitors = setup_monitors()  # Initiates Monitors
 

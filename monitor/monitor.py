@@ -96,13 +96,13 @@ class AbstractMonitor(ABC):
                 source = klass(source_cfg, source_name=source_name)
                 self.sources.append(source)
             except ModuleNotFoundError:
-                logging.error("Unable to find the Module you specified for source.")
+                logging.error("Unable to find the Module you specified for {0}".format(source_name))
                 continue
             except AttributeError:
-                logging.error("Missing or wrong source.class Attribute in config.yaml")
+                logging.error("Missing or wrong source.class Attribute in {0}".format(source_name))
                 continue
             except TypeError:
-                logging.error("Missing source.class Attribute in config.yaml")
+                logging.error("Missing source.class Attribute in {0}".format(source_name))
                 continue
 
     def add_triggers(self, triggers):
@@ -163,13 +163,11 @@ class AbstractMonitor(ABC):
                 action = klass(action_cfg)
                 self.actions.append(action)
             except ModuleNotFoundError:
-                logging.error("Unable to find the Module you specified for trigger.")
+                logging.error("Unable to find the Module you specified for {0}".format(action_name))
                 continue
-            except AttributeError:
-                logging.error("Missing or wrong action.class Attribute in config.yaml")
+            except AttributeError or TypeError:
+                logging.error("Missing or wrong action.class Attribute in {0}".format(action_name))
                 continue
-            except TypeError:
-                logging.error("Missing action.class Attribute in config.yaml")
 
     def do_monitoring(self):
         """Called once every monitor cycle to calculate whether the triggers have to fire or not"""
@@ -185,8 +183,10 @@ class AbstractMonitor(ABC):
         triggers = []
         for trigger in self.triggers:
             for dataX in data:
+                # Trigger needs to be evaluated for every data separately
                 trigg = copy.deepcopy(trigger)
                 if trigg.check_condition(dataX):
+                    trigg.fired_recently()
                     triggers.append(trigg)
         #  triggers = collapse_triggers(trigger) Group Support - Not used anymore
 

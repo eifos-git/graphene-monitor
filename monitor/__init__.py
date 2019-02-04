@@ -14,45 +14,38 @@ class Config:
     general_config = {}
 
     @staticmethod
-    def _load(monitor_config_files, load_type):
+    def _load(monitor_config_files):
         """
-        Load the specified configuration into the Config class
+        Load the configuration file into Config.data
 
         :param monitor_config_files:
-        :param str load_type: data --> monitor config
-                              general --> general config
         """
         if isinstance(monitor_config_files, str):
             monitor_config_files = [monitor_config_files]
         for file in monitor_config_files:
             with open(file, 'r') as stream:
-                if load_type == "data":
-                    Config.data.append(yaml.load(stream))
-                elif load_type == "general":
-                    Config.general_config.update(yaml.load(stream))
+                Config.data.append(yaml.load(stream))
 
     @staticmethod
-    def _get_general_config(config):
-        try:
-            return Config.general_config[config]
-        except KeyError:
-            return None
+    def _get_general_config(key):
+        """This should not fail. If it does, define a defualt value for the configuration
+        as click option in cli."""
+        return Config.general_config[key]
 
     @staticmethod
-    def load_monitor_config(monitor_config_files):
-        """Load a arbitrary amount of monitor config files.
-        Put the config Files in monitor/monitor_config_files
+    def add_general_config(general_config):
+        Config.general_config = general_config
+
+    @staticmethod
+    def load_monitor_config():
+        """Loads the configuration file you specified in cli.py and saves it
+        in data
         """
         Config._load(
             os.path.join(
                 os.getcwd(),
-                monitor_config_files
-            ), "data")
-
-    @staticmethod
-    def load_general_config():
-        """Load general information from monitor/general_config.yaml"""
-        Config._load("general_config.yaml", "general")
+                Config._get_general_config("config")
+            ))
 
     @staticmethod
     def get_monitor_cycle_length():
@@ -68,6 +61,10 @@ class Config:
     def get_bool_multithreading():
         multithreading = Config._get_general_config("multithreading")
         return False if multithreading is None else multithreading
+
+    @staticmethod
+    def get_trigger_downtime():
+        return Config._get_general_config("downtime")
 
 
 def setup_monitors():
@@ -116,7 +113,6 @@ def start_working(monitors):
         time.sleep(Config.get_monitor_cycle_length())
 
 
-Config.load_general_config()
-logging.basicConfig(filename="monitor.log", filemode="w", format="%(message)s")
+
 
 

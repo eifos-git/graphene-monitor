@@ -4,9 +4,8 @@ from . import AbstractTrigger
 class DataChanged(AbstractTrigger):
 
     def __init__(self, config):
-        super().__init__()
+        super().__init__(config)
         self.trigger_conditions = False
-        super().set_config(config)
         self.old_data = None
 
     def prepare_message(self):
