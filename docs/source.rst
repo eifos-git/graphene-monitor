@@ -1,11 +1,11 @@
-monitor.action package
+monitor.source package
 ======================
 
 
 Module Contents
 ---------------
 
-.. automodule:: monitor.action
+.. automodule:: monitor.source
     :members:
     :undoc-members:
     :show-inheritance:

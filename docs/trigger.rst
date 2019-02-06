@@ -1,11 +1,11 @@
-monitor.action package
-======================
+monitor.trigger package
+=======================
 
 
 Module Contents
 ---------------
 
-.. automodule:: monitor.action
+.. automodule:: monitor.trigger
     :members:
     :undoc-members:
     :show-inheritance:
