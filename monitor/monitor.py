@@ -16,21 +16,18 @@ class AbstractMonitor(ABC):
 
     def __init__(self, config, name=None):
         self.name = name
+        self.config = config
+
         self.sources = list()
         self.triggers = list()
         self.actions = list()
         self.st_pairs = list()  # Pair each source with a trigger
 
-        self.sources_config = config["sources"]
-        self.triggers_config = config["triggers"]
-        self.actions_config = config["actions"]
-
-        self.add_sources(self._get_config("sources"))
-        self.add_triggers(self._get_config("triggers"))
-        self.add_actions(self._get_config("actions"))
+        self.add_sources(config["sources"])
+        self.add_triggers(config["triggers"])
+        self.add_actions(config["actions"])
 
         self.combine_sources_and_triggers()
-        print("ST PAIRS: " + str(len(self.st_pairs)))
 
     def _get_config(self, monitor_domain, value=None, subclasses=None):
         """TODO: This is lazy coding to make it work at the time. There might be some cases in\
@@ -47,11 +44,11 @@ class AbstractMonitor(ABC):
             i.e. subclasses=["trigger1"] if you want the config of trigger 1"""
 
         if monitor_domain in ["s", "sources"]:
-            config = self.sources_config
+            config = self.config["sources"]
         elif monitor_domain in ["t", "triggers"]:
-            config = self.triggers_config
+            config = self.config["triggers"]
         elif monitor_domain in ["a", "actions"]:
-            config = self.actions_config
+            config = self.config["actions"]
         else:
             raise ValueError("monitor_domain hast to be either 'sources', 'triggers' or 'actions'")
 
@@ -194,31 +191,19 @@ class AbstractMonitor(ABC):
 
     def do_monitoring(self):
         """Called once every monitor cycle to calculate whether the triggers have to fire or not"""
-        data = []
         for source in self.sources:
-            new_data = source.retrieve_data()
-            if new_data is not None:
-                data.append(new_data)
-            else:
-                # TODO is it useful to make this part of source
+            source.retrieve_data()
+            if source.get_data() is None:
                 self.handle_no_data(source)
 
-        triggers = []
-        for trigger in self.triggers:
-            for dataX in data:
-                # Trigger needs to be evaluated for every data separately
-                trigg = copy.deepcopy(trigger)
-                if trigg.check_condition(dataX):
-                    if trigg.fired_recently() is True:
-                        #  The trigger condition is True but it fired too recently. Therefore we skip it
-                        trigger.deactivate_trigger()
-                    else:
-                        trigger.update_last_time_fired()
-                        triggers.append(trigg)
-        #  triggers = collapse_triggers(trigger) Group Support - Not used anymore
+        activated_triggers = []
+        for st_pair in self.st_pairs:
+            if st_pair.check_condition():
+                activated_triggers.append(st_pair.get_trigger())
 
-        for trigger in triggers:
+        for trigger in activated_triggers:
             if trigger.get_condition() is False:
+                logging.warning("THIS SHOULD NOT HAPPEN! In monitor.do_monitoring()")
                 continue
             message = "The following Monitor fired: {0}\n".format(self.name) + str(trigger.prepare_message())
             try:
@@ -255,9 +240,16 @@ class AbstractMonitor(ABC):
         return self._get_config("sources", "error_level")
 
 
-class SourceTriggerPair():
+class SourceTriggerPair:
+    """SourceTriggerPair is the class that stitches our sources and our triggers together.
+    They are connected even before the first trigger is evaluated.
+    STP's are necessary because the user might want to add sources with similar data that
+    aren't supposed to activate certain triggers.
+    Let's say you have a source that tracks how much BTS you have left in your wallet.
+    If this is for some reason exactly 400 you probably don't want your HTTPErrorResponse
+    Trigger so fire."""
     def __init__(self, source, trigger):
-        self._wanted = self._check_if_wanted(source, trigger)
+        self._wanted = SourceTriggerPair._check_if_wanted(source, trigger)
         if self._wanted:
             self.source = source  # Does not need to be copied, because it isnt changed by any trigger
             self.trigger = copy.deepcopy(trigger)
@@ -267,15 +259,30 @@ class SourceTriggerPair():
         A Pair """
         return self._wanted
 
-    def _check_if_wanted(self, source, trigger):
+    def get_trigger(self):
+        return self.trigger
+
+    @staticmethod
+    def _check_if_wanted(source, trigger):
         """Only used before initialization to check the triggers config. Look at check_source
-        for a better description"""
+        for a better description. Basically it checks the configuration of trigger whether
+        this pair should exist or not"""
         source_name = source.get_source_name()
         is_wanted = trigger.check_source(source_name)
         return is_wanted
 
-
-
+    def check_condition(self):
+        """Check and return whether the trigger's condition is met"""
+        if not self._wanted:
+            logging.warning("You tried to check the condition of a trigger with a source"
+                            "that is not supposed to be checked")
+            return False
+        data = self.source.get_data()
+        if data is None:
+            return False
+        self.trigger.check_condition(data)
+        self.trigger.fired_recently()  # sets condition to false if trigger fired recently
+        return self.trigger.get_condition()
 
 
 class Monitor(AbstractMonitor):

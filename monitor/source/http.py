@@ -12,12 +12,13 @@ class Http(AbstractSource):
 
     def retrieve_data(self):
         """Returns the status code of the http request. """
+        self._set_data()
         try:
             url = self.get_url()
             if url is None:
-                return None
+                return
             r = requests.get(url)
         except requests.exceptions.ConnectionError:
-            return None
-        return r.status_code
+            return
+        self._set_data(r.status_code)
 

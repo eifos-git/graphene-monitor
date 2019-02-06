@@ -7,8 +7,8 @@ class AbstractSource(ABC):
     def __init__(self, source_config, source_name):
         self.config = source_config
         self._source_name = source_name
+        self._data = None
 
-    # set config(self, config) deleted
     def _get_config_value(self, key, ignore_key_error=False):
         """Method to retrieve the value of the sources config with a given key.
         If ignore key error is set to True any type of key error is ignored and therefore
@@ -27,6 +27,12 @@ class AbstractSource(ABC):
                 logging.error("Key Error in AbstractSource._get_config_value for the key {0}".format(key))
                 return None
         return value
+
+    def _set_data(self, value=None):
+        """Set Data to a new value. This should only be done by the retrieve message method.
+        Value to None indicates that something went wrong when retrieving data and later on
+        executes AbstractMonitor.handle_no_data()"""
+        self._data = value
 
     def add_config(self, key, value, overwrite=False):
         """Use this method to add a new key or change the config of your source Object.
@@ -57,6 +63,10 @@ class AbstractSource(ABC):
         :return: source name as defined in config
         """
         return self._source_name
+
+    def get_data(self):
+        """Returns the current data value of the source. Data is updated every monitor cycle"""
+        return self._data
 
     @abstractmethod
     def retrieve_data(self):

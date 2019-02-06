@@ -24,17 +24,16 @@ class PeerplaysBalance(AbstractSource):
         return account_name
 
     def retrieve_data(self):
-        b = None
+        self.data = None
         if self.account_name is None or self.asset is None:
             logging.error("retrieve data of source Peerplays Balance failed, because of missing information")
             return None
 
         try:
-            b = Account(self.account_name).balance(self.asset).amount
+            self.data = Account(self.account_name).balance(self.asset).amount
         except AssetDoesNotExistsException as e:
             logging.error("Asset does not exist: " + str(e))
         except AccountDoesNotExistsException as e:
             logging.error("Account does not exist: " + str(e))
         except ValueError as e:
             logging.error(str(e) + " -- This usually happens when Peerplays is not set up correctly.")
-        return b

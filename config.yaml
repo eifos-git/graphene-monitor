@@ -3,9 +3,9 @@ Http_and_Peerplays_Monitor:
         - localhost_response:
             class: monitor.source.http.Http
             url: http://127.0.0.1:5000
-        - localhost_response_two:
+        - localhost_response_one:
             class: monitor.source.http.Http
-            url: http://127.0.0.1:5000
+            url: http://127.0.0.1:5001
 
 
 
@@ -24,7 +24,7 @@ Http_and_Peerplays_Monitor:
         - ExpectedResponseCode:
             class: monitor.trigger.valuecompare.ValueCompare
             equal: 200
-            downtime: 5
+            downtime: 15
             level: 2
 
     actions:

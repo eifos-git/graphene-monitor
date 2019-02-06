@@ -26,7 +26,7 @@ class Config:
 
     @staticmethod
     def _get_general_config(key):
-        """This should not fail. If it does, define a defualt value for the configuration
+        """This should not fail. If it does, define a default value for the configuration
         as click option in cli."""
         return Config.general_config[key]
 
