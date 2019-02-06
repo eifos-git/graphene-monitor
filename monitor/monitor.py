@@ -186,8 +186,12 @@ class AbstractMonitor(ABC):
                 # Trigger needs to be evaluated for every data separately
                 trigg = copy.deepcopy(trigger)
                 if trigg.check_condition(dataX):
-                    trigg.fired_recently()
-                    triggers.append(trigg)
+                    if trigg.fired_recently() is True:
+                        #  The trigger condition is True but it fired too recently. Therefore we skip it
+                        trigger.deactivate_trigger()
+                    else:
+                        trigger.update_last_time_fired()
+                        triggers.append(trigg)
         #  triggers = collapse_triggers(trigger) Group Support - Not used anymore
 
         for trigger in triggers:

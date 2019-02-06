@@ -2,8 +2,6 @@ import time
 import yaml
 import os
 import threading
-import logging
-from .trigger.utils import collapse_triggers
 from .monitor import Monitor
 
 

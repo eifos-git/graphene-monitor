@@ -1,5 +1,5 @@
 from . import AbstractTrigger
-
+import logging
 
 class ValueCompare(AbstractTrigger):
 
@@ -24,7 +24,8 @@ class ValueCompare(AbstractTrigger):
         super().check_condition(data)  # add data to config as source_value
 
         if type(data) not in [int, float, bool]:
-            raise TypeError("Value_Compare can only compare int, float or bool")
+            logging.error("Value_Compare can only compare int, float or bool")
+            return False
 
         for (key, value) in self.config.items():
             cfunc = evaluate_trigger_condition(key, value, data)
@@ -33,10 +34,10 @@ class ValueCompare(AbstractTrigger):
                     # One trigger condition is false and therfore it shouldnt fire
                     # We return it anyway to enable groupings
                     self.fire_condition_met = False
-                    return self.config
+                    return False
             cfunc = None
         self.fire_condition_met = True
-        return self.config
+        return True
 
 
 def evaluate_trigger_condition(key, value, data):

@@ -21,7 +21,7 @@ Http_and_Peerplays_Monitor:
         - ExpectedResponseCode:
             class: monitor.trigger.valuecompare.ValueCompare
             equal: 200
-            downtime: 10
+            downtime: 5
             level: 2
 
     actions:

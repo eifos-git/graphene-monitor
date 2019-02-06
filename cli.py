@@ -5,7 +5,7 @@ from monitor import Config, start_working, setup_monitors
 
 @click.command()
 @click.option("--config", type=str, default="config.yaml")
-@click.option("--monitor_interval", type=int, default=2)
+@click.option("--monitor_interval", type=int, default=1)
 @click.option("--multithreading", type=bool, default=False)
 @click.option("--downtime", type=int, default=1)
 def main(**kwargs):
@@ -17,8 +17,8 @@ def main(**kwargs):
     A method to make the class names shorter might be useful
     Interval trigger
     Add triggers.check_compatability
-    Timestamp bock älter als 15 sec
-    Event höchstens 120 inplay
+    Timestamp bock alter als 15 sec
+    Event hochstens 120 inplay
     DNS tets
     graphene healthchecker config
     change console to stdout

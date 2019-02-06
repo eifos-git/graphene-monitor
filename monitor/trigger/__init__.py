@@ -31,7 +31,7 @@ class AbstractTrigger(ABC):
         return self.config[value]
 
     def get_downtime(self):
-        return self._downtime
+        return self.downtime
 
     def get_condition(self):
         return self.fire_condition_met
@@ -47,17 +47,17 @@ class AbstractTrigger(ABC):
         condition is simply set to False. Otherwise function does nothing.
         """
         if not self.get_condition():
-            return
+            return False
         last_fire = self.get_last_time_fired()
         if last_fire is None:
             self.update_last_time_fired()
-            return
-        if (time.time() - last_fire) <= (self.get_last_time_fired() * 60):
+            return False
+        if (time.time() - last_fire) <= self.get_downtime():
             self.deactivate_trigger()
+            return True
         else:
             self.update_last_time_fired()
-
-
+            return False
 
     def deactivate_trigger(self):
         """The trigger can be disabled after its evaluation to enable group support.
