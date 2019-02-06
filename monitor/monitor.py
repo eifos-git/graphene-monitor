@@ -19,9 +19,18 @@ class AbstractMonitor(ABC):
         self.sources = list()
         self.triggers = list()
         self.actions = list()
+        self.st_pairs = list()  # Pair each source with a trigger
+
         self.sources_config = config["sources"]
         self.triggers_config = config["triggers"]
         self.actions_config = config["actions"]
+
+        self.add_sources(self._get_config("sources"))
+        self.add_triggers(self._get_config("triggers"))
+        self.add_actions(self._get_config("actions"))
+
+        self.combine_sources_and_triggers()
+        print("ST PAIRS: " + str(len(self.st_pairs)))
 
     def _get_config(self, monitor_domain, value=None, subclasses=None):
         """TODO: This is lazy coding to make it work at the time. There might be some cases in\
@@ -169,6 +178,20 @@ class AbstractMonitor(ABC):
                 logging.error("Missing or wrong action.class Attribute in {0}".format(action_name))
                 continue
 
+    def combine_sources_and_triggers(self):
+        """Triggers have to explicitly name the sources they want to use.
+        In this method we create a pair for every trigger and source that
+        want to be combined to a pair together.
+
+        This is done by adding source in the config of your trigger
+        """
+        for source in self.sources:
+            for trigger in self.triggers:
+                st_pair = SourceTriggerPair(source, trigger)
+                if st_pair.check_if_wanted():
+                    #  This means the pairing is legit and wanted from the user
+                    self.st_pairs.append(st_pair)
+
     def do_monitoring(self):
         """Called once every monitor cycle to calculate whether the triggers have to fire or not"""
         data = []
@@ -232,10 +255,30 @@ class AbstractMonitor(ABC):
         return self._get_config("sources", "error_level")
 
 
+class SourceTriggerPair():
+    def __init__(self, source, trigger):
+        self._wanted = self._check_if_wanted(source, trigger)
+        if self._wanted:
+            self.source = source  # Does not need to be copied, because it isnt changed by any trigger
+            self.trigger = copy.deepcopy(trigger)
+
+    def check_if_wanted(self):
+        """Test if the pair is wanted for this monitor or not.
+        A Pair """
+        return self._wanted
+
+    def _check_if_wanted(self, source, trigger):
+        """Only used before initialization to check the triggers config. Look at check_source
+        for a better description"""
+        source_name = source.get_source_name()
+        is_wanted = trigger.check_source(source_name)
+        return is_wanted
+
+
+
+
+
 class Monitor(AbstractMonitor):
 
     def __init__(self, config, name=None):
         super().__init__(config, name)
-        self.add_sources(self._get_config("sources"))
-        self.add_triggers(self._get_config("triggers"))
-        self.add_actions(self._get_config("actions"))

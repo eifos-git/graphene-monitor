@@ -36,6 +36,19 @@ class AbstractTrigger(ABC):
     def get_condition(self):
         return self.fire_condition_met
 
+    def check_source(self, current_source_name):
+        """Test for a source name whether this trigger is supposed to handle and evaluate
+        the data retrieved from it.
+        No source in the config for trigger is treated as if every source is accepted
+
+        :param current_source_name: The name of the source to be tested
+        :return bool: Whether or not this trigger should handle the source's data
+        """
+        source_name = self.get_config("source", True)
+        if source_name is None or source_name == current_source_name:
+            return True
+        return False
+
     def get_last_time_fired(self):
         return self._last_time_fired
 

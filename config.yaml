@@ -3,18 +3,21 @@ Http_and_Peerplays_Monitor:
         - localhost_response:
             class: monitor.source.http.Http
             url: http://127.0.0.1:5000
+        - localhost_response_two:
+            class: monitor.source.http.Http
+            url: http://127.0.0.1:5000
+
 
 
     triggers:
         - RichUserTrigger:
             class: monitor.trigger.valuecompare.ValueCompare
-            source: mischas_pp_balance
+            source: localhost_response # Only use data retrieved from <source> to check this trigger
             greater: 99909
             level: 2
 
         - ErrorResponseCodeTrigger:
             class: monitor.trigger.valuecompare.ValueCompare
-            source: localhost_response
             greater_or_equal: 300
             level: 2
 
