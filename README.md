@@ -22,3 +22,6 @@ Add and use new Triggers/Actions from scratch:
 ==============================================
 
 Use the steps described for source but interchange every source with trigger/action.
+
+
+sphinx-apidoc -d 6 -e -f -o docs monitor

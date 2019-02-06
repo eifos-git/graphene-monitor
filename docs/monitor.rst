@@ -1,13 +1,21 @@
 monitor package
-=================
+===============
+
+Subpackages
+-----------
+
+.. toctree::
+
+    monitor.action
+    monitor.source
+    monitor.trigger
 
 Submodules
 ----------
 
 .. toctree::
-    action
-    source
-    trigger
+
+   monitor.monitor
 
 Module contents
 ---------------

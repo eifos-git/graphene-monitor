@@ -13,6 +13,7 @@ This Module can Monitor
    :caption: Contents:
 
    monitor
+   modules
 
 
 Indices and tables
