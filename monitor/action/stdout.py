@@ -1,6 +1,7 @@
 from . import AbstractAction
 
-class Console(AbstractAction):
+
+class Stdout(AbstractAction):
     """Console is a type of action that only prints messages to the console"""
 
     def __init__(self, config):

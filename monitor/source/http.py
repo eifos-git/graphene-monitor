@@ -3,10 +3,6 @@ import requests
 
 
 class Http(AbstractSource):
-    def __init__(self, source_config, source_name):
-        """Gets called before the first monitor iteration starts"""
-        super().__init__(source_config, source_name)
-
     def get_url(self):
         return self._get_config_value("url")
 

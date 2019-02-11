@@ -1,0 +1,39 @@
+monitor:
+    http_source:
+        type: monitor.source.http.Http
+        url: http://127.0.0.1:5000/
+        error_level: 1
+
+    peerplays_source:
+        type: monitor.source.peerplays_balance.PeerplaysBalance
+
+    triggers:
+        - RichUserTrigger:
+            type: monitor.trigger.value_compare.ValueCompare
+            ">=": 10000
+            source: peerplays_source
+            level: 1
+
+        - ErrorResponseCode:
+            type: monitor.trigger.value_compare.ValueCompare
+            greater_or_equal: 400
+            level: 1
+
+        - ExpectedResponseCode:
+            type: monitor.trigger.value_compare.ValueCompare
+            greater_or_equal: 200
+            less_or_equal: 300
+            level: 1
+
+    actions:
+        - action1:
+            type: log
+            level: 0
+
+        - action2:
+            type: console
+            level: 1
+
+        - action3:
+            type: telegram
+            level: 2

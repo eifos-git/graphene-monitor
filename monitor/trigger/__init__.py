@@ -81,13 +81,15 @@ class AbstractTrigger(ABC):
     def get_level(self):
         return self.get_config("level")
 
+    def get_data(self):
+        return self.get_config("source_value")
+
     @abstractmethod
     def check_condition(self, data):
         """Decides, whether the trigger condition is met and therefore if it shoots,
         """
         self.config["source_value"] = data
 
-    @abstractmethod
     def prepare_message(self):
         """Message to be sent to action. A more meaningful method should be implemented
         for a specific trigger"""

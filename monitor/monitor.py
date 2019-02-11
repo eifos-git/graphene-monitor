@@ -5,7 +5,7 @@ import copy
 
 
 class AbstractMonitor(ABC):
-    """Abstract Monitor is the outermost framework for the monitor program.
+    """Abstract Monitor is the outermost framework for this application.
     It is implemented as an Abstract class but mostly used as a normal class.
     Monitor inherits from Abstract Monitor but add almost no functionality, because all
     of the methods in Abstract Monitor are mandatory.

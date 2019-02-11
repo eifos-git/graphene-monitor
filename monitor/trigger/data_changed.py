@@ -18,10 +18,10 @@ class DataChanged(AbstractTrigger):
         if self.old_data is None:
             # first monitor iteration doesnt fire by convention
             self.old_data = OldData(data)
-            return self.config
+            return False
         else:
             self.fire_condition_met = self.old_data.has_changed(data)
-        return self.config
+        return self.get_condition()
 
 
 class OldData:
