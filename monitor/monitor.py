@@ -21,7 +21,7 @@ class AbstractMonitor(ABC):
         self.sources = list()
         self.triggers = list()
         self.actions = list()
-        self.st_pairs = list()  # Pair each source with a trigger
+        self.st_pairs = list()  # Pair each trigger to source
 
         self.add_sources(config["sources"])
         self.add_triggers(config["triggers"])

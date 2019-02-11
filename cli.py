@@ -5,7 +5,7 @@ from monitor import Config, start_working, setup_monitors
 
 @click.command()
 @click.option("--config", type=str, default="config.yaml")
-@click.option("--monitor_interval", type=int, default=10)
+@click.option("--monitor_interval", type=int, default=2)
 @click.option("--multithreading", type=bool, default=False)
 def main(**kwargs):
     # TODO There might be a way to outsource some things from the do_monitoring class especially everything from stp

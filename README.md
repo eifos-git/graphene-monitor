@@ -10,18 +10,12 @@ There are two Classes 'stitching' thoses modules together. For a closer document
 
 
 
-Add and use a new Source from scratch:
+Add and use a new Monitor Domain from scratch:
 ======================================
 
-    1. Create a new source that inherits from monitor.source.AbstractSource\
-       and implements all necessary methods in monitor/source/<new_source>.    
-    2. Change the class parameter (or add a new source) to the path to your new source File
+The main purpose of this module is not to give you an application for your specific problem, but to
+provide a framework you can easily use to achieve your solution. 
 
 
-Add and use new Triggers/Actions from scratch:
-==============================================
+Look at add_domain.rst for an easy introduction on to how you solve this problem. 
 
-Use the steps described for source but interchange every source with trigger/action.
-
-
-sphinx-apidoc -d 6 -e -f -o docs monitor
