@@ -1,21 +1,8 @@
 import unittest
 from unittest.mock import MagicMock
+from . import MockTrigger
 from monitor.trigger.valuecompare import ValueCompare, evaluate_trigger_condition
-from monitor.trigger.data_changed import DataChanged, OldData
-from monitor.trigger import AbstractTrigger
-from collections import deque
-
-
-class MockTrigger(AbstractTrigger):
-    def check_condition(self, data):
-        super().check_condition(data)
-        if data == 0:
-            return False
-        self.fire_condition_met = True
-        return True
-
-    def prepare_message(self):
-        return "Mock Trigger ok"
+from monitor.trigger.data_changed import DataChanged
 
 
 class TestValueCompare(unittest.TestCase):

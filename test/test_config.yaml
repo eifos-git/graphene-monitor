@@ -29,6 +29,6 @@ Http_and_Peerplays_Monitor:
 
     actions:
         - action2:
-            class: monitor.action.console.Console
+            class: monitor.action.stdout.Stdout
             level: 2
 

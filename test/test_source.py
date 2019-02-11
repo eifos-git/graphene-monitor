@@ -1,13 +1,10 @@
 import unittest
-from monitor.source import AbstractSource
+from . import MockSource
 from monitor.source.http import Http
 from monitor.source.peerplays_balance import PeerplaysBalance
-from collections import deque
 
 
-class MockSource(AbstractSource):
-    def retrieve_data(self):
-        return 0
+
 
 
 class TestAbstractSource(unittest.TestCase):

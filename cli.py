@@ -8,6 +8,7 @@ from monitor import Config, start_working, setup_monitors
 @click.option("--monitor_interval", type=int, default=2)
 @click.option("--multithreading", type=bool, default=False)
 def main(**kwargs):
+    # TODO test monitor and test config schreiben
     # TODO There might be a way to outsource some things from the do_monitoring class especially everything from stp
     """Also:
     add database support for a public api

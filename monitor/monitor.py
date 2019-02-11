@@ -256,7 +256,7 @@ class SourceTriggerPair:
 
     def check_if_wanted(self):
         """Test if the pair is wanted for this monitor or not.
-        A Pair """
+        """
         return self._wanted
 
     def get_trigger(self):
