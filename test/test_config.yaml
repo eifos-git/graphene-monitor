@@ -1,29 +1,30 @@
-Http_and_Peerplays_Monitor:
+test_config_monitor:
     sources:
-        - localhost_response:
+        - bitshares:
             class: monitor.source.http.Http
-            url: http://127.0.0.1:5000
-        - localhost_response_one:
+            url: https://bitshares.org/
+
+        - blockchainprojectsbv:
             class: monitor.source.http.Http
-            url: http://127.0.0.1:5001
-
-
+            url: https://www.blockchainprojectsbv.com/
 
     triggers:
-        - RichUserTrigger:
+        - bitshares_error:
             class: monitor.trigger.valuecompare.ValueCompare
-            source: localhost_response # Only use data retrieved from <source> to check this trigger
-            greater: 99909
+            source: bitshares
+            greater_or_equal: 400
             level: 2
 
-        - ErrorResponseCodeTrigger:
+        - blockchainprojectsbv_error:
             class: monitor.trigger.valuecompare.ValueCompare
-            greater_or_equal: 300
+            source: blockchainprojectsbv
+            greater_or_equal: 400
             level: 2
 
         - ExpectedResponseCode:
             class: monitor.trigger.valuecompare.ValueCompare
-            equal: 200
+            less: 300
+            greater_or_equal: 200
             downtime: 15
             level: 2
 

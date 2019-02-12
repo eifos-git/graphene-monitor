@@ -178,9 +178,12 @@ class AbstractMonitor(ABC):
     def combine_sources_and_triggers(self):
         """Triggers have to explicitly name the sources they want to use.
         In this method we create a pair for every trigger and source that
-        want to be combined to a pair together.
+        want to be combined to a pair together. In the main monitoring method
+        those pairs are tested for the triggers conditions
 
         This is done by adding source in the config of your trigger
+
+
         """
         for source in self.sources:
             for trigger in self.triggers:
@@ -247,7 +250,11 @@ class SourceTriggerPair:
     aren't supposed to activate certain triggers.
     Let's say you have a source that tracks how much BTS you have left in your wallet.
     If this is for some reason exactly 400 you probably don't want your HTTPErrorResponse
-    Trigger so fire."""
+    Trigger so fire.
+    Important to mention is that every stp keeps a copy of the trigger but a reference to data.
+    This allows us to change the data value in every stp by changing the data value in source.
+    Trigger on the other is copied because some of its attributes are dependent on the trigger
+    that fired (e.g. the time it last fire)."""
     def __init__(self, source, trigger):
         self._wanted = SourceTriggerPair._check_if_wanted(source, trigger)
         if self._wanted:
