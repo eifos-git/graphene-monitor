@@ -1,0 +1,29 @@
+test_config_monitor:
+    sources:
+        - cbuffer:
+            class: test.CircularBuffer
+
+    triggers:
+        - bitshares_error:
+            class: monitor.trigger.valuecompare.ValueCompare
+            source: bitshares
+            greater_or_equal: 400
+            level: 2
+
+        - blockchainprojectsbv_error:
+            class: monitor.trigger.valuecompare.ValueCompare
+            source: blockchainprojectsbv
+            greater_or_equal: 400
+            level: 2
+
+        - ExpectedResponseCode:
+            class: monitor.trigger.valuecompare.ValueCompare
+            less: 300
+            greater_or_equal: 200
+            downtime: 15
+            level: 2
+
+    actions:
+        - action2:
+            class: monitor.action.stdout.Stdout
+            level: 2
