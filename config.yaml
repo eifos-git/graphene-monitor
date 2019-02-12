@@ -4,7 +4,6 @@ Http_and_Peerplays_Monitor:
             class: monitor.source.http.Http
             url: http://127.0.0.1:5000
 
-
     triggers:
         - RichUserTrigger:
             class: monitor.trigger.data_changed.DataChanged
@@ -13,6 +12,11 @@ Http_and_Peerplays_Monitor:
             greater: 210
             level: 0
 
+        - ErrorResponseCodeTrigger:
+            class: monitor.trigger.valuecompare.ValueCompare
+            greater_or_equal: 300
+            downtime: 30
+            level: 2
 
     actions:
         - action:
