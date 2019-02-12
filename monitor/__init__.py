@@ -71,7 +71,7 @@ def setup_monitors():
     for monitor_config in Config.data:
         # In case multiple monitors are added into one config File:
         for monitor in monitor_config.keys():
-            monitors.append(Monitor(monitor_config[monitor], name=monitor))
+            monitors.append(Monitor(monitor_config[monitor], name=monitor, general_config=Config.general_config))
     return monitors
 
 
@@ -106,8 +106,6 @@ def start_working(monitors):
         else:
             for monitor in monitors:
                 monitor.do_monitoring()
-        print("------- Monitor cycle finished. Going to sleep now zZz. ------")
-        print("\n")
         time.sleep(Config.get_monitor_cycle_length())
 
 

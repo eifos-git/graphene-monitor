@@ -8,6 +8,7 @@ class AbstractSource(ABC):
         self.config = source_config
         self._source_name = source_name
         self._data = None
+        self._currently_reachable = True
 
     def _get_config_value(self, key, ignore_key_error=False):
         """Method to retrieve the value of the sources config with a given key.
@@ -67,6 +68,13 @@ class AbstractSource(ABC):
     def get_data(self):
         """Returns the current data value of the source. Data is updated every monitor cycle"""
         return self._data
+
+    def set_is_reachable(self, reachable):
+        self._currently_reachable = reachable
+
+    def check_if_currently_reachable(self):
+        """Check whether the source is already known to be unreachable."""
+        return self._currently_reachable
 
     @abstractmethod
     def retrieve_data(self):

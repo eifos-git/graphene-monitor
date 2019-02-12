@@ -8,7 +8,6 @@ Http_and_Peerplays_Monitor:
             url: http://127.0.0.1:5001
 
 
-
     triggers:
         - RichUserTrigger:
             class: monitor.trigger.valuecompare.ValueCompare
@@ -19,6 +18,7 @@ Http_and_Peerplays_Monitor:
         - ErrorResponseCodeTrigger:
             class: monitor.trigger.valuecompare.ValueCompare
             greater_or_equal: 300
+            downtime: 30
             level: 2
 
         - ExpectedResponseCode:

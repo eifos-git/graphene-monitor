@@ -8,7 +8,7 @@ class TelegramAction(AbstractAction):
         super().__init__(config)
 
     def fire(self, message):
-        telegram_send(message)
+        #telegram_send(message)
         print("------------TELEGRAM-------------")
         print(message)
         print("------------TELEGRAM-END-------------")

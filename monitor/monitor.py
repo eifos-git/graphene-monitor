@@ -14,20 +14,21 @@ class AbstractMonitor(ABC):
     set the program up.
     Every monitor iteration the function do_monitoring is executed."""
 
-    def __init__(self, config, name=None):
+    def __init__(self, config, name=None, general_config=None):
         self.name = name
         self.config = config
+        self.config["general_config"] = general_config
 
         self.sources = list()
         self.triggers = list()
         self.actions = list()
         self.st_pairs = list()  # Pair each source with a trigger
 
-        self.add_sources(config["sources"])
-        self.add_triggers(config["triggers"])
-        self.add_actions(config["actions"])
+        self._add_sources(config["sources"])
+        self._add_triggers(config["triggers"])
+        self._add_actions(config["actions"])
 
-        self.combine_sources_and_triggers()
+        self._combine_sources_and_triggers()
 
     def _get_config(self, monitor_domain, value=None, subclasses=None):
         """TODO: This is lazy coding to make it work at the time. There might be some cases in\
@@ -77,7 +78,15 @@ class AbstractMonitor(ABC):
 
         return sr
 
-    def add_sources(self, sources):
+    def _get_general_config(self, key):
+        """get values for the options in cli.py"""
+        try:
+            value = self.config["general_config"][key]
+        except KeyError:
+            return None
+        return value
+
+    def _add_sources(self, sources):
         """Add sources to the monitor
 
         :param sources: List of dictionaries with exactly one key to value pair each.
@@ -111,7 +120,7 @@ class AbstractMonitor(ABC):
                 logging.error("Missing source.class Attribute in {0}".format(source_name))
                 continue
 
-    def add_triggers(self, triggers):
+    def _add_triggers(self, triggers):
         """Add triggers to the monitor
 
         :param triggers: List of dictionaries with exactly one key to value pair each.
@@ -144,7 +153,7 @@ class AbstractMonitor(ABC):
             except TypeError:
                 logging.error("Missing trigger.class Attribute in " + trigger_name)
 
-    def add_actions(self, actions):
+    def _add_actions(self, actions):
         """Add actinosto the monitor
 
         :param actions: List of dictionaries with exactly one key to value pair each.
@@ -175,7 +184,7 @@ class AbstractMonitor(ABC):
                 logging.error("Missing or wrong action.class Attribute in {0}".format(action_name))
                 continue
 
-    def combine_sources_and_triggers(self):
+    def _combine_sources_and_triggers(self):
         """Triggers have to explicitly name the sources they want to use.
         In this method we create a pair for every trigger and source that
         want to be combined to a pair together.
@@ -194,7 +203,10 @@ class AbstractMonitor(ABC):
         for source in self.sources:
             source.retrieve_data()
             if source.get_data() is None:
+                # source is unreachable
                 self.handle_no_data(source)
+            else:
+                self.check_if_newly_available(source)
 
         activated_triggers = []
         for st_pair in self.st_pairs:
@@ -216,16 +228,29 @@ class AbstractMonitor(ABC):
                     action.fire(message)
 
     def handle_no_data(self, source, level=None):
-        """Handler that prepares a message for each source that is not available.
+        """Handle no data gets called every time a source does'nt return data for some reason.
+        In order to not spam the user about the fact that the source is unreachable, we only
+        fire a trigger every time the state of the source changes from available to not available.
 
-        :param source: Object of type AbstractSource that
-        :param level: None means that all actions will fire, otherwise it uses the usual level convention"""
+        It either fires on every action defined in config """
+        if not source.check_if_currently_reachable():
+            return
 
+        source.set_is_reachable(False)
         for action in self.actions:
             if level is None or action.get_level() <= level:
-                action.fire("The following monitor fired: {0}\n"
+                action.fire("Monitor: {0}\n"
                             "Trigger: Handle no data trigger\n"
-                            "The source {1} is unreachable.\n".format(self.name, source.get_source_name()))
+                            "   - {1} is unreachable.\n".format(self.name, source.get_source_name()))
+
+    def check_if_newly_available(self, source):
+        """If the source was recently unavailable: notify the user about it being
+        available again."""
+        if not source.check_if_currently_reachable():
+            # Marked as unreachable by previous monitor iterations
+            source.set_is_reachable(True)
+            for action in self.actions:
+                action.fire("Source {0} of Monitor {1} is reachable again!\n\n".format(self.name, source.get_source_name()))
 
     def get_source_type(self, source_name):
         return self._get_config("sources", "class", [source_name])
@@ -287,5 +312,5 @@ class SourceTriggerPair:
 
 class Monitor(AbstractMonitor):
 
-    def __init__(self, config, name=None):
-        super().__init__(config, name)
+    def __init__(self, config, general_config, name=None):
+        super().__init__(config, name, general_config)
