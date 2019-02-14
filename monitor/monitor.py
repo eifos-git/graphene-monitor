@@ -117,7 +117,8 @@ class AbstractMonitor(ABC):
                 logging.error("Missing or wrong source.class Attribute in {0}".format(source_name))
                 continue
             except TypeError:
-                logging.error("Missing source.class Attribute in {0}".format(source_name))
+                logging.error("Missing source.class Attribute in {0}, or wrong instantiation "
+                              "of the class".format(source_name))
                 continue
 
     def _add_triggers(self, triggers):
