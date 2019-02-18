@@ -214,7 +214,7 @@ class AbstractMonitor(ABC):
 
         activated_triggers = []
         for st_pair in self.st_pairs:
-            if st_pair.check_condition():
+            if st_pair.evaluate_trigger_condition():
                 activated_triggers.append(st_pair.get_trigger())
 
         for trigger in activated_triggers:
@@ -304,7 +304,7 @@ class SourceTriggerPair:
         is_wanted = trigger.check_source(source_name)
         return is_wanted
 
-    def check_condition(self):
+    def evaluate_trigger_condition(self):
         """Check and return whether the trigger's condition is met"""
         if not self._wanted:
             logging.warning("You tried to check the condition of a trigger with a source"
@@ -313,7 +313,7 @@ class SourceTriggerPair:
         data = self.source.get_data()
         if data is None:
             return False
-        self.trigger.check_condition(data)
+        cond = self.trigger.evaluate_trigger_condition(data)
         self.trigger.fired_recently()  # sets condition to false if trigger fired recently
         return self.trigger.get_condition()
 

@@ -84,11 +84,19 @@ class AbstractTrigger(ABC):
     def get_data(self):
         return self.get_config("source_value")
 
+    def evaluate_trigger_condition(self, data):
+        """Wrapper method for check condition. We want to write the new data in the config add it
+        to a more meaningful message and additionally we have to set the fire_condition_met attribute to the result
+        """
+        self.config["source_value"] = data
+        condition_met = self.check_condition(data)
+        self.fire_condition_met = condition_met
+        return condition_met
+
     @abstractmethod
     def check_condition(self, data):
         """Decides, whether the trigger condition is met and therefore if it shoots,
         """
-        self.config["source_value"] = data
 
     def prepare_message(self):
         """Message to be sent to action. A more meaningful method should be implemented

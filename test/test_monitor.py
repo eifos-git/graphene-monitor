@@ -21,7 +21,7 @@ class TestSourceTriggerPair(unittest.TestCase):
 
     def test_check_condition(self):
         self.st_pair.source.retrieve_data()
-        self.assertTrue(self.st_pair.check_condition())
+        self.assertTrue(self.st_pair.evaluate_trigger_condition())
 
     def tearDown(self):
         self.trigger = None
