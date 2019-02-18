@@ -1,19 +1,17 @@
 from . import AbstractTrigger
 import logging
 
+
 class ValueCompare(AbstractTrigger):
 
-    def __init__(self, config):
-        super().__init__(config)
-
     def prepare_message(self):
-        data = self.get_config("source_value")
+        data = self.get_data()
         message = ""
         message += "Trigger: {0}\n".format(self.get_config("name"))
         message += "Data: {0}\n".format(data)
         message += "Conditions:\n"
         for (key, value) in self.config.items():
-            cfunc = evaluate_trigger_condition(key, value, data)
+            cfunc = evaluate_trigger_condition(key, data, value)
             if cfunc is True:
                 message += "   - Data {0} {1}\n".format(key, value)
             elif cfunc is None:
@@ -28,10 +26,10 @@ class ValueCompare(AbstractTrigger):
             return False
 
         for (key, value) in self.config.items():
-            cfunc = evaluate_trigger_condition(key, value, data)
+            cfunc = evaluate_trigger_condition(key, data, value)
             if cfunc is not None:
                 if not cfunc:
-                    # One trigger condition is false and therfore it shouldnt fire
+                    # One trigger condition is false and therefore it shouldn't fire
                     # We return it anyway to enable groupings
                     self.fire_condition_met = False
                     return False
@@ -40,8 +38,9 @@ class ValueCompare(AbstractTrigger):
         return True
 
 
-def evaluate_trigger_condition(key, value, data):
+def evaluate_trigger_condition(key, data, value):
     """Evaluates whether the defined condition is met.
+    It is evaluated for
     If not return None ot indicate that the key was not meant for trigger evaluation(i.e. level)
     """
     if key in ["!=", "unequal", "ue"]:

@@ -10,10 +10,11 @@ Http_and_Peerplays_Monitor:
 
     triggers:
         - RichUserTrigger:
-            class: monitor.trigger.valuecompare.ValueCompare
+            class: monitor.trigger.data_changed.DataChanged
             source: localhost_response # Only use data retrieved from <source> to check this trigger
-            greater: 99909
-            level: 2
+            downtime: 7
+            greater: 210
+            level: 0
 
         - ErrorResponseCodeTrigger:
             class: monitor.trigger.valuecompare.ValueCompare
@@ -28,6 +29,6 @@ Http_and_Peerplays_Monitor:
             level: 2
 
     actions:
-        - action2:
-            class: monitor.action.console.Console
-            level: 2
+        - action:
+            class: monitor.action.stdout.Stdout
+            level: 0

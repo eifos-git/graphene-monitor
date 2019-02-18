@@ -1,12 +1,7 @@
 test_config_monitor:
     sources:
-        - bitshares:
-            class: monitor.source.http.Http
-            url: https://bitshares.org/
-
-        - blockchainprojectsbv:
-            class: monitor.source.http.Http
-            url: https://www.blockchainprojectsbv.com/
+        - cbuffer:
+            class: test.CircularBuffer
 
     triggers:
         - bitshares_error:
@@ -32,4 +27,3 @@ test_config_monitor:
         - action2:
             class: monitor.action.stdout.Stdout
             level: 2
-
