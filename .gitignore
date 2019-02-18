@@ -1,0 +1,14 @@
+#Dont track contents of these folders
+.idea/
+__pycache__/
+docs/_build/
+env/
+monitor.log
+monitor/__init__.pyc
+monitor/__pycache__/
+monitor/action/__pycache__/
+monitor/monitor.pyc
+monitor/source/__pycache__/
+monitor/trigger/__init__.pyc
+monitor/trigger/__pycache__/
+
