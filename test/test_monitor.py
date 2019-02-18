@@ -41,16 +41,5 @@ class TestUnwantedSourceTriggerPair(unittest.TestCase):
         self.assertFalse(self.st_pair.check_if_wanted())
 
 
-class TestAbstractMonitor(unittest.TestCase):
-    def setUp(self):
-        Config.add_general_config(dict(config="test_monitor.yaml"))
-        log = logging.getLogger(__name__)
-        Config.load_monitor_config()
-
-        self.monitors = setup_monitors()
-
-    def test_attributes(self):
-        print(self.monitors)
-
 if __name__ == "__main__":
     unittest.main()

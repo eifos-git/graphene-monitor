@@ -16,7 +16,8 @@ class TestAbstractSource(unittest.TestCase):
         self.assertEqual(self.source.get_source_name(), "mocksource")
 
     def test_get_data(self):
-        self.assertEqual(self.source.retrieve_data(), 0)
+        self.source.retrieve_data()
+        self.assertEqual(self.source.get_data(), 0)
 
     def tearDown(self):
         self.source = None

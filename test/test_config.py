@@ -1,4 +1,5 @@
 import unittest
+import sys
 import logging
 from io import StringIO
 from monitor import Config, setup_monitors

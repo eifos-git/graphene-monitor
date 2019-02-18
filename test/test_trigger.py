@@ -74,12 +74,15 @@ class TestAbstractTrigger(unittest.TestCase):
         self.trigger.check_condition(1)
         self.assertFalse(self.trigger.fired_recently())
 
+        # If the trigger only just recently fired
         self.trigger.downtime = 1
+        self.trigger.check_condition(0)
+        self.trigger.update_last_time_fired()
         self.assertTrue(self.trigger.fired_recently())
         self.assertFalse(self.trigger.get_condition())
 
-        # If the last fire time is happened a long time ago
-        self.trigger.check_condition(1)
+        # If the last fire time has happened a long time ago
+        self.trigger.check_condition(0)
         self.trigger.get_last_time_fired = MagicMock(return_value=0)
         self.assertTrue(self.trigger.get_condition())
 
@@ -106,6 +109,7 @@ class TestDataChanged(unittest.TestCase):
 
     def tearDown(self):
         self.trigger = None
+
 
 if __name__ == "__main__":
     unittest.main()

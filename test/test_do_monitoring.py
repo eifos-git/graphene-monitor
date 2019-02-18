@@ -1,9 +1,8 @@
 import unittest
-from unittest.mock import MagicMock
 import logging
-import os
 from monitor import Monitor
-from test import MockBuffer, MockTrigger, MockAction
+import sys
+import os
 
 config = {'sources': [{'MockBuffer': {'class': 'test.MockBuffer'}}],
           'triggers': [{'MockTrigger':
@@ -16,7 +15,11 @@ class TestMonitorSetup(unittest.TestCase):
     def setUp(self):
         global config
         self.monitor = Monitor(config, name="integration_test", general_config=dict())
-        self.monitor.st_pairs[0].trigger.fired_recently = MagicMock(return_value=False)
+
+        # Catches and ignores all the print to stdout in monitor.do_monitoring()
+        self.original_stdout = sys.stdout
+        self.stdout_dump = open("stdout_dump.txt", "w")
+        sys.stdout = self.stdout_dump
 
     def update_condition_data(self):
         return self.monitor.st_pairs[0].source.get_data(), self.monitor.st_pairs[0].trigger.fire_condition_met
@@ -39,6 +42,11 @@ class TestMonitorSetup(unittest.TestCase):
         data, condition = self.update_condition_data()
         self.assertTrue(data is None)
 
+    def tearDown(self):
+        self.monitor = None
+        sys.stdout = self.original_stdout
+        self.stdout_dump.close()
+        os.remove("stdout_dump.txt")
 
 
 if __name__ == '__main__':
