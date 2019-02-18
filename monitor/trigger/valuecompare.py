@@ -19,8 +19,7 @@ class ValueCompare(AbstractTrigger):
         return message
 
     def check_condition(self, data):
-        super().check_condition(data)  # add data to config as source_value
-
+        """Checks whether or not data meets the requirements specified in config for this trigger"""
         if type(data) not in [int, float, bool]:
             logging.error("Value_Compare can only compare int, float or bool")
             return False
@@ -31,10 +30,8 @@ class ValueCompare(AbstractTrigger):
                 if not cfunc:
                     # One trigger condition is false and therefore it shouldn't fire
                     # We return it anyway to enable groupings
-                    self.fire_condition_met = False
                     return False
             cfunc = None
-        self.fire_condition_met = True
         return True
 
 
