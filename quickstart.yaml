@@ -1,0 +1,16 @@
+BlockchainProjectsMonitor:
+    sources:
+        - Blockchainprojects:
+            class: monitor.source.http.Http
+            url: https://www.blockchainprojectsbv.com/
+
+    triggers:
+        - ServerErrorTrigger:
+            class: monitor.trigger.valuecompare.ValueCompare
+            greater_or_equal: 500
+            level: 0
+
+    actions:
+        - Stdout:
+            class: monitor.action.stdout.Stdout
+            level: 0

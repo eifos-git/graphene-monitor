@@ -230,6 +230,7 @@ class AbstractMonitor(ABC):
             for action in self.actions:
                 if trigger_level >= action.get_level():
                     action.fire(message)
+        print("monitor_cycle_finished")
 
     def handle_no_data(self, source, level=None):
         """Handle no data gets called every time a source does'nt return data for some reason.

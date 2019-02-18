@@ -3,29 +3,12 @@ Http_and_Peerplays_Monitor:
         - localhost_response:
             class: monitor.source.http.Http
             url: http://127.0.0.1:5000
-        - localhost_response_one:
-            class: monitor.source.http.Http
-            url: http://127.0.0.1:5001
-
 
     triggers:
-        - RichUserTrigger:
-            class: monitor.trigger.data_changed.DataChanged
-            source: localhost_response # Only use data retrieved from <source> to check this trigger
-            downtime: 7
-            greater: 210
-            level: 0
-
         - ErrorResponseCodeTrigger:
             class: monitor.trigger.valuecompare.ValueCompare
-            greater_or_equal: 300
+            greater_or_equal: 400
             downtime: 30
-            level: 2
-
-        - ExpectedResponseCode:
-            class: monitor.trigger.valuecompare.ValueCompare
-            equal: 200
-            downtime: 15
             level: 2
 
     actions:
