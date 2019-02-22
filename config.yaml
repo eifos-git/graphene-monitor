@@ -8,10 +8,10 @@ Http_and_Peerplays_Monitor:
         - ErrorResponseCodeTrigger:
             class: monitor.trigger.valuecompare.ValueCompare
             greater_or_equal: 400
-            downtime: 30
+            downtime: 3
             level: 2
 
     actions:
         - action:
-            class: monitor.action.stdout.Stdout
-            level: 0
+            class: monitor.action.telegram.Telegram
+            level: 2

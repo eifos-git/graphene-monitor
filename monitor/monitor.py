@@ -1,7 +1,17 @@
 from abc import ABC, abstractmethod
-from utils import get_classname_for_config
 import logging
 import copy
+
+
+def get_classname_for_config(path_to_class):
+    """Returns class name and module name for class seperated.
+    Example: config.yaml should have an entry in every S/T/A giving the path to
+    your implementaion e.g.: source_class:monitor.source.http.Http
+    To properly import it in python we separate monitor.source.http from Http
+    """
+    for i in range(len(path_to_class)-1, -1, -1):
+        if path_to_class[i] is '.':
+            return path_to_class[0:i], path_to_class[i+1:]
 
 
 class AbstractMonitor(ABC):
@@ -218,9 +228,6 @@ class AbstractMonitor(ABC):
                 activated_triggers.append(st_pair.get_trigger())
 
         for trigger in activated_triggers:
-            if trigger.get_condition() is False:
-                logging.warning("THIS SHOULD NOT HAPPEN! In monitor.do_monitoring()")
-                continue
             message = "The following Monitor fired: {0}\n".format(self.name) + str(trigger.prepare_message())
             try:
                 trigger_level = trigger.get_level()
@@ -228,7 +235,7 @@ class AbstractMonitor(ABC):
                 logging.error("No level provided for trigger, therefore it never fires!")
                 continue
             for action in self.actions:
-                if trigger_level >= action.get_level():
+                if trigger_level == action.get_level():
                     action.fire(message)
         print("monitor_cycle_finished")
 
