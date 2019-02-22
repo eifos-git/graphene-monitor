@@ -41,10 +41,10 @@ class AbstractMonitor(ABC):
         self._combine_sources_and_triggers()
 
     def _get_config(self, monitor_domain, value=None, subclasses=None):
-        """TODO: This is lazy coding to make it work at the time. There might be some cases in\
+        """TODO: This is lazy coding to make it work at the time. There may be some cases in\
         which this function fails.
 
-        Usage: Get the setting for <value> from the current Monitor. Everytime yaml uses a list,
+        Usage: Get the setting for <value> from the current Monitor. Every time yaml uses a list,
             subclasses decides where to go next
 
         param monitor_domain: either source/triggers/action or s/t/a
