@@ -29,10 +29,10 @@ class AbstractMonitor(ABC):
         self.config = config
         self.config["general_config"] = general_config
 
-        self.sources = list()
-        self.triggers = list()
-        self.actions = list()
-        self.st_pairs = list()  # Pair each trigger to source
+        self.sources = list()  #: List of all the sources of this monitor
+        self.triggers = list()  #: List of all the triggers of this monitor
+        self.actions = list()  #: List of all the actions of this monitor
+        self.st_pairs = list()  #: List of all the combinations of sources and triggers the user wants.
 
         self._add_sources(config["sources"])
         self._add_triggers(config["triggers"])
@@ -213,7 +213,10 @@ class AbstractMonitor(ABC):
                     self.st_pairs.append(st_pair)
 
     def do_monitoring(self):
-        """Called once every monitor cycle to calculate whether the triggers have to fire or not"""
+        """Main method of monitor. Called once every monitor cycle. At first it updates all the sources, secondly
+        it goes through all the stpairs and checks their conditions and finally it fires the messages for each
+        stpair that is supposed to fire in the according action."""
+
         for source in self.sources:
             source.retrieve_data()
             if source.get_data() is None:
@@ -240,7 +243,7 @@ class AbstractMonitor(ABC):
         print("monitor_cycle_finished")
 
     def handle_no_data(self, source, level=None):
-        """Handle no data gets called every time a source does'nt return data for some reason.
+        """Handle no data gets called every time a source doesn't return data for some reason.
         In order to not spam the user about the fact that the source is unreachable, we only
         fire a trigger every time the state of the source changes from available to not available.
 
@@ -250,14 +253,13 @@ class AbstractMonitor(ABC):
 
         source.set_is_reachable(False)
         for action in self.actions:
-            if level is None or action.get_level() <= level:
+            if level is None or action.get_level() == level:
                 action.fire("Monitor: {0}\n"
                             "Trigger: Handle no data trigger\n"
                             "   - {1} is unreachable.\n".format(self.name, source.get_source_name()))
 
     def check_if_newly_available(self, source):
-        """If the source was recently unavailable: notify the user about it being
-        available again."""
+        """If the source was recently unavailable notifies the user that the source is available again"""
         if not source.check_if_currently_reachable():
             # Marked as unreachable by previous monitor iterations
             source.set_is_reachable(True)
@@ -278,22 +280,13 @@ class AbstractMonitor(ABC):
 
 
 class SourceTriggerPair:
-    """SourceTriggerPair is the class that stitches our sources and our triggers together.
-    They are connected even before the first trigger is evaluated.
-    STP's are necessary because the user might want to add sources with similar data that
-    aren't supposed to activate certain triggers.
-    Let's say you have a source that tracks how much BTS you have left in your wallet.
-    If this is for some reason exactly 400 you probably don't want your HTTPErrorResponse
-    Trigger so fire.
-    Important to mention is that every stp keeps a copy of the trigger but a reference to data.
-    This allows us to change the data value in every stp by changing the data value in source.
-    Trigger on the other is copied because some of its attributes are dependent on the trigger
-    that fired (e.g. the time it last fire)."""
+    """Combine one source with a copy of a trigger"""
+
     def __init__(self, source, trigger):
         self._wanted = SourceTriggerPair._check_if_wanted(source, trigger)
         if self._wanted:
-            self.source = source  # Does not need to be copied, because it isnt changed by any trigger
-            self.trigger = copy.deepcopy(trigger)
+            self.source = source  #: Reference to the source of this stpair
+            self.trigger = copy.deepcopy(trigger)  #: Copy of the trigger of this stpair
 
     def check_if_wanted(self):
         """Test if the pair is wanted for this monitor or not.
@@ -301,6 +294,7 @@ class SourceTriggerPair:
         return self._wanted
 
     def get_trigger(self):
+        """Get trigger"""
         return self.trigger
 
     @staticmethod

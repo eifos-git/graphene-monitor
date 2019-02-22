@@ -70,7 +70,10 @@ class AbstractSource(ABC):
         return self._data
 
     def set_is_reachable(self, reachable):
-        self._currently_reachable = reachable
+        """:param reachable: New value for the reachability of source
+        """
+        if isinstance(reachable, bool):
+            self._currently_reachable = reachable
 
     def check_if_currently_reachable(self):
         """Check whether the source is already known to be unreachable."""

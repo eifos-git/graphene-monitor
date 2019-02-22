@@ -1,6 +1,9 @@
 monitor.source package
 ======================
 
+Source is the part of Monitor that actually retrieves data. It needs to have at least one method that gets called every
+monitor cycle to update its value.
+
 Submodules
 ----------
 

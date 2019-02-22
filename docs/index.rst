@@ -18,7 +18,7 @@ Monitor is divided into three subpackages:
 * trigger
 * action
 
-Each subpackages, sometimes referred to as *monitor domain*, takes on it's own small task.
+Each subpackages, sometimes referred to as *monitor domain*, takes on it's own individual task.
 
 There are two classes that stitch them together. First and foremost there is the monitor class.
 Monitor itself is the framework that is used to do the monitoring and parse data from one module to the other.
