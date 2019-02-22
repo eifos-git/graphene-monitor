@@ -1,17 +1,17 @@
 Http_and_Peerplays_Monitor:
     sources:
         - localhost_response:
-            class: monitor.source.http.Http
-            url: http://127.0.0.1:5000
+            class: monitor.source.peerplays_events.PeerplaysEvents
 
     triggers:
         - ErrorResponseCodeTrigger:
             class: monitor.trigger.valuecompare.ValueCompare
             greater_or_equal: 400
-            downtime: 3
+            downtime: 30
             level: 2
 
     actions:
         - action:
-            class: monitor.action.telegram.Telegram
+            class: monitor.action.stdout.Stdout
             level: 2
+

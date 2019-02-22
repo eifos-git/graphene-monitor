@@ -5,8 +5,9 @@ from monitor import Config, start_working, setup_monitors
 
 @click.command()
 @click.option("--config", type=str, default="config.yaml")
-@click.option("--monitor_interval", type=int, default=1)
+@click.option("--monitor_interval", type=int, default=2)
 @click.option("--multithreading", type=bool, default=False)
+@click.option("--trigger_downtime", type=int, default=0)
 def main(**kwargs):
     Config.add_general_config(kwargs)
 

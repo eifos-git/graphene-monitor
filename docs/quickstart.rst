@@ -26,7 +26,7 @@ your application. The basic structure of every yaml file is:
 
 ::
 
-    <monitor_name>
+    <monitor_name>:
         sources:
             - <source1>:
                 class:
@@ -38,6 +38,8 @@ your application. The basic structure of every yaml file is:
         actions:
             - <action1>:
                 class:
+
+    (<second_monitor_name>:)
 
 The - in front of the paramter, e.g. source1, indicates that we can add multiple different sources. Class is mandatory
 and is used by the application to import the class you defined. Everything in between <> is arbitrary and we highly

@@ -13,8 +13,8 @@ class AbstractTrigger(ABC):
     def _set_downtime(self):
         downtime = self.get_config("downtime", ignore=True)
         if downtime is None:
-            downtime = 0
-            # TODO: downtime = Config.get_trigger_downtime()
+            from monitor import Config
+            downtime = Config.get_trigger_downtime()
         return downtime
 
     def get_config(self, value, ignore=False):

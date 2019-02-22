@@ -62,7 +62,7 @@ class Config:
 
     @staticmethod
     def get_trigger_downtime():
-        return Config._get_general_config("downtime")
+        return Config._get_general_config("trigger_downtime")
 
 
 def setup_monitors():
