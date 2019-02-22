@@ -25,16 +25,6 @@ class TestValueCompare(unittest.TestCase):
         self.assertFalse(evaluate_trigger_condition("<=", 11, 10))
         self.assertFalse(evaluate_trigger_condition("<", 10, 10))
 
-    def test_check_condition(self):
-        self.assertTrue(self.trigger.check_condition(1337))
-        self.assertTrue(self.trigger.get_condition())
-        self.assertEqual(self.trigger.get_data(), 1337)
-
-    def test_prepare_message(self):
-        self.trigger.check_condition(1337)
-        message = self.trigger.prepare_message()
-        self.assertIsInstance(message, str)
-
     def tearDown(self):
         self.trigger = None
         self.ms = None
@@ -53,12 +43,6 @@ class TestAbstractTrigger(unittest.TestCase):
 
     def test_get_level(self):
         self.assertEqual(self.trigger.get_level(), 2)
-
-    def test_get_data(self):
-        with self.assertRaises(KeyError):
-            self.trigger.get_data()
-        self.trigger.check_condition(1)
-        self.assertTrue(self.trigger.get_data())
 
     def test_deactivate_trigger(self):
         self.trigger.check_condition(1)

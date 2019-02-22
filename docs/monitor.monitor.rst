@@ -21,15 +21,4 @@ Abstract monitor are basically the same.
     :members:
 
 
-Source Trigger Pair
--------------------
 
-Another, less self explanatory attribute of a Monitor is stpair. Stpair is a list of stpairs,
-each consisting of a reference to a source and a copy of a trigger.
-They are necessary because the user may want to create a trigger that is evaluated only for one source. Additionally
-we don't want to spam the user so whenever one stpair fires, it will not fire again for a specified amount of seconds
-(downtime in trigger config or general config).
-
-
-.. autoclass:: monitor.monitor.SourceTriggerPair
-    :members:

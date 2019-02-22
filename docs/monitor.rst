@@ -16,6 +16,7 @@ Submodules
 .. toctree::
 
    monitor.monitor
+   monitor.source_trigger_pair
 
 Module contents
 ---------------
