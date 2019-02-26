@@ -53,6 +53,14 @@ Contents
    tutorials
    monitor
 
+API
+===
+
+.. toctree::
+   :maxdepth: 6
+
+   modules
+
 Indices and tables
 ==================
 

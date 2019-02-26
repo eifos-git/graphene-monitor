@@ -5,19 +5,18 @@ Subpackages
 -----------
 
 .. toctree::
-    :maxdepth: 1
 
+    monitor.action
     monitor.source
     monitor.trigger
-    monitor.action
 
 Submodules
 ----------
 
 .. toctree::
 
-    monitor.monitor
-    monitor.source_trigger_pair
+   monitor.monitor
+   monitor.source_trigger_pair
 
 Module contents
 ---------------
