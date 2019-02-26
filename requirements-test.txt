@@ -1,0 +1,9 @@
+# Unit testing
+pytest
+pytest-mock
+coverage
+mock
+
+# Code style
+black
+pre-commit
