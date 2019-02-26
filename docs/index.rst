@@ -51,7 +51,6 @@ Contents
    installation
    quickstart
    tutorials
-   monitor
 
 API
 ===
