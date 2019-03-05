@@ -1,0 +1,44 @@
+sports:
+ - id: '1.20.1'
+   name:
+    - ["en", "Basketball"]
+    - ["identifier", "Basketball"]
+    - ["sen", "Basketball"]
+
+eventgroups:
+ - id: '1.21.12'
+   name:
+     - ['en', 'NBA Regular Season']
+     - ['identifier', "NBA Regular Season"]
+     - ['sen', 'NBA']
+   sport_id: '1.20.1'
+
+ - id: "1.21.13"
+   name:
+     - ["en", "NBA Off Season"]
+     - ["identifier", "NBA Off Season"]
+     - ["sen", "NBA"]
+   sport_id: "1.20.1"
+
+events:
+ - id: "1.22.2241"
+   status: "upcoming"
+   name: [["en", "Demo : Foobar"], ['en_us', 'Foobar @ Demo']]
+   season: [["en", "2017"]]
+   start_time: "2018-10-16T00:00:00"
+   event_group_id: "1.21.12"
+
+ - id: "1.22.2242"
+   status: "upcoming"
+   name: [['en', "Dallas Mavericks @ Cleveland Cavaliers"]]
+   season: [["en", "2017"]]
+   start_time: "2019-3-4T14:35:00"
+   event_group_id: "1.21.13"
+
+ - id: "1.22.2243"
+   status: "upcoming"
+   name: [['en', "Toronto Raptors @ Utah Jazz"]]
+   season: [["en", "2017"]]
+   start_time: "2022-10-16T00:00:00"
+   event_group_id: "1.21.12"
+

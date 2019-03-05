@@ -8,8 +8,13 @@ class EventOutdated(AbstractTrigger):
         super().__init__(config)
         self.outdated_events = []
 
+    @staticmethod
+    def _is_outdated(time_window, event):
+        start_time = datetime.strptime(event["start_time"], '%Y-%m-%dT%H:%M:%S')
+        timedelta = (datetime.now() - start_time).total_seconds()
+        return timedelta > time_window and event["status"] == "upcoming"
+
     def prepare_message(self):
-        data = self.get_data()
         message = ""
         if len(self.outdated_events) is 1:
             message += "Outdated Event detected!\n\n"
@@ -28,14 +33,10 @@ class EventOutdated(AbstractTrigger):
         time_window = self.get_config("time_window", ignore=True)
         if time_window is None:
             time_window = 600
-
         for event in data:
-            start_time = datetime.strptime(event["start_time"], '%Y-%m-%dT%H:%M:%S')
-            timedelta = (datetime.now() - start_time).total_seconds()
-            if timedelta > time_window and event["status"] == "upcoming":
+            if EventOutdated._is_outdated(time_window, event):
                 # Event is upcoming but should already be in play
                 self.outdated_events.append(event)
-
         return len(self.outdated_events) is not 0
 
 

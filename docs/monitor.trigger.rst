@@ -7,6 +7,7 @@ Submodules
 .. toctree::
 
    monitor.trigger.data_changed
+   monitor.trigger.event_outdated
    monitor.trigger.utils
    monitor.trigger.valuecompare
 

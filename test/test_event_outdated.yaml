@@ -1,21 +1,16 @@
-Http_and_Peerplays_Monitor:
+TestEventOutdated:
     sources:
-        - CricketEvents:
+        - BasketballEvents:
             class: monitor.source.peerplays_events.PeerplaysEvents
-            sport_id: 1.20.1
 
     triggers:
-
-        - uiuiu:
+        - OutdatedEventTrigger:
             class: monitor.trigger.event_outdated.EventOutdated
-            status: upcoming
-            time_window: 1000
+            time_window: 300
             #downtime: 100  # --> 100 seconds no trigger
             level: 2
 
-
     actions:
         - action:
-            class: monitor.action.telegram.Telegram
+            class: monitor.action.stdout.Stdout
             level: 2
-
