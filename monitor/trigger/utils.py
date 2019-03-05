@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 def collapse_triggers(triggers):
     """This util is supposed to enable trigger grouping.
     When the triggers conditions are evaluated we cannot simply cross out all the false ones,
@@ -16,5 +19,15 @@ def collapse_triggers(triggers):
     return triggers
 
 
+def string_to_time(string_time):
+    return datetime.strptime(string_time, '%Y-%m-%dT%H:%M:%S')
+
+
+def time_to_string(time):
+    return time.strftime('%Y-%m-%dT%H:%M:%S')
+
+
+def time_now():
+    return string_to_time(datetime.now().strftime('%Y-%m-%dT%H:%M:%S'))
 
 

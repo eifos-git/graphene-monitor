@@ -89,3 +89,11 @@ that means the response code is in between the interval [200, 300).
 I also sneaked another parameter in. Downtime is used to prevent the application from spamming. Every time
 SuccessResponseCode fires it has a downtime of eight seconds. That means it won't fire for eight seconds or in our case
 exactly for one cycle.
+
+Examples
+--------
+
+A bunch of working example configs are provided in the ./examples folder.
+
+* event_outdated.yaml: Monitor all Peerplays events and get notified when the status
+    of an event hasn't changed after a specified time

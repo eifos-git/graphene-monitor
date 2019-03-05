@@ -14,10 +14,7 @@ class DataChanged(AbstractTrigger):
 
     def get_reverse(self):
         """Get the reverse config. Default is set to False"""
-        rev = self.get_config("reverse", ignore=True)
-        if rev is None:
-            return False
-        return rev
+        return self.get_config("reverse", ignore=True, default=False)
 
     def check_condition(self, data):
         if self.old_data is None:

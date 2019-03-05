@@ -33,6 +33,7 @@ class PeerplaysEvents(AbstractSource):
                     for event in Events(eventgroup["id"]):
                         self._append_event(data, event)
 
+        # sport id is given: only check its' events
         elif self.eventgroup_id is None:
             # no eventgroup id is given, therefore we check all of the sports events
             try:
@@ -45,14 +46,14 @@ class PeerplaysEvents(AbstractSource):
                 for event in Events(eventgroup["id"]):
                     self._append_event(data, event)
 
-        # Eventgroup id given, only check its' events
+        # Eventgroup id is given: only check its' events
         else:
             try:
                 events = Events(self.eventgroup_id)
             except UnhandledRPCError:
                 logging.warning("Unhandled RPC Error in {0} for event id. Eventgroup ids have start with 1.21.<>"
                                 .format(self.get_source_name()))
-            for event in Events(self.eventgroup_id):
+            for event in events:
                 self._append_event(data, event)
 
         self._set_data(data)

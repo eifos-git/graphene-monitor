@@ -1,0 +1,22 @@
+Http_and_Peerplays_Monitor:
+    sources:
+        - Events:
+            class: monitor.source.peerplays_events.PeerplaysEvents
+
+    triggers:
+        - TooLongInProgressTrigger:
+            class: monitor.trigger.event_outdated.EventOutdated
+            #status upcoming, inprograss
+            status: in_progress
+            #trigger when event is still in progress 1000 seconds after start_time
+            time_window: 12000
+            # If trigger fires once, it isn't supposed to fire again for 60 seconds
+            downtime: 60
+            level: 0
+
+
+    actions:
+        - action:
+            class: monitor.action.stdout.Stdout
+            level: 0
+

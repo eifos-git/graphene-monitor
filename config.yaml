@@ -2,20 +2,18 @@ Http_and_Peerplays_Monitor:
     sources:
         - CricketEvents:
             class: monitor.source.peerplays_events.PeerplaysEvents
-            sport_id: 1.20.1
 
     triggers:
-
-        - uiuiu:
-            class: monitor.trigger.event_outdated.EventOutdated
-            status: upcoming
-            time_window: 1000
+        - TooLongInProgress:
+            class: monitor.trigger.event_transition.EventTransition
+            #status upcoming, inprogress
+            time_window: 10
             #downtime: 100  # --> 100 seconds no trigger
             level: 2
 
 
     actions:
         - action:
-            class: monitor.action.telegram.Telegram
+            class: monitor.action.stdout.Stdout
             level: 2
 

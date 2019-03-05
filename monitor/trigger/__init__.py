@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import time
+import logging
 
 
 class AbstractTrigger(ABC):
@@ -17,18 +18,22 @@ class AbstractTrigger(ABC):
             downtime = Config.get_trigger_downtime()
         return downtime
 
-    def get_config(self, value, ignore=False):
+    def get_config(self, value, ignore=False, default=None):
         """
         :param value: Config you are looking for
         :param ignore: if True it ignores KeyErrors (i.e. missing configs) and
             silently returns None
+        :param default: Can be returned as defualt value, but only if ignore is set
         """
-        if ignore:
-            try:
-                self.config[value]
-            except KeyError:
+        try:
+            self.config[value]
+            return self.config[value]
+        except KeyError:
+            if ignore:
+                return default
+            else:
+                logging.warning("Missing config value {0} in trigger".format(value))
                 return None
-        return self.config[value]
 
     def get_downtime(self):
         return self.downtime
@@ -54,6 +59,9 @@ class AbstractTrigger(ABC):
 
     def update_last_time_fired(self):
         self._last_time_fired = time.time()
+
+    def update_data(self, new_data):
+        self.config["source_value"] = new_data
 
     def fired_recently(self):
         """Checks the last time the trigger fired and if it happened too recently the trigger
