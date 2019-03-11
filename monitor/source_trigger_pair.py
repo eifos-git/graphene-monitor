@@ -3,7 +3,10 @@ import logging
 
 
 class SourceTriggerPair:
-    """Combine one source with a copy of a trigger"""
+    """Combination of exactly one trigger and one source.
+    Source is saved as a reference in STP whereas Trigger is copied. This allows us to modify data in trigger
+    to create more meaningful messages.
+    """
 
     def __init__(self, source, trigger):
         self._wanted = SourceTriggerPair._check_if_wanted(source, trigger)
