@@ -1,17 +1,17 @@
 Http_and_Peerplays_Monitor:
     sources:
-        - CricketEvents:
-            class: monitor.source.peerplays_events.PeerplaysEvents
+        - wittnessProposals:
+            class: monitor.source.http.Http
+            url: http://blockchainprojectsbv.com
+            account_name: mischa
 
     triggers:
         - TooLongInProgress:
-            class: monitor.trigger.event_transition.EventTransition
+            class: monitor.trigger.data_available.DataAvailable
             status: in_progress
-            #status upcoming, inprogress
-            time_window: 10
-            #downtime: 100  # --> 100 seconds no trigger
+            time_window: 7200
+            downtime: 3600
             level: 2
-
 
     actions:
         - action:

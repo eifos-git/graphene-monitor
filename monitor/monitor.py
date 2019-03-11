@@ -255,7 +255,7 @@ class AbstractMonitor(ABC):
         for action in self.actions:
             if level is None or action.get_level() == level:
                 action.fire("Monitor: {0}\n"
-                            "Trigger: Handle no data trigger\n"
+                            "Handle no data trigger\n"
                             "   - {1} is unreachable.\n".format(self.name, source.get_source_name()))
 
     def check_if_newly_available(self, source):

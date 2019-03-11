@@ -95,5 +95,7 @@ Examples
 
 A bunch of working example configs are provided in the ./examples folder.
 
-* event_outdated.yaml: Monitor all Peerplays events and get notified when the status
-    of an event hasn't changed after a specified time
+* event_outdated.yaml: Monitor Peerplays Events and get notified when the status of an event
+    hasn't changed after a specified time after its' supposed start time.
+* event_transition.yaml: Monitor all Peerplays Events and notifies you if none has changed for a
+    specified time period

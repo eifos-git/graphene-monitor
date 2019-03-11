@@ -28,6 +28,7 @@ class PeerplaysEvents(AbstractSource):
 
         if self.sport_id is None and self.eventgroup_id is None:
             # no sport id is given, therefore we want to check all events
+            Sports.refresh()
             for sport in Sports():
                 for eventgroup in EventGroups(sport["id"]):
                     for event in Events(eventgroup["id"]):

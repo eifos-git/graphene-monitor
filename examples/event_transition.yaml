@@ -1,0 +1,21 @@
+Http_and_Peerplays_Monitor:
+    sources:
+        - CricketEvents:
+            class: monitor.source.peerplays_events.PeerplaysEvents
+
+    triggers:
+        - TooLongInProgress:
+            class: monitor.trigger.event_transition.EventTransition
+            # only if status of event is <status>
+            status: in_progress
+            # after <time_window> seconds of not changing
+            time_window: 7200
+            # This trigger fires at most once every hour
+            downtime: 3600
+            level: 2
+
+    actions:
+        - action:
+            class: monitor.action.stdout.Stdout
+            level: 2
+

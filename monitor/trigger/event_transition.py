@@ -4,6 +4,23 @@ from .utils import string_to_time, time_to_string, time_now
 
 
 class EventTransition(AbstractTrigger):
+    """Event Transition is a trigger that makes sure, that an Event changes it's status (or if desired start_time)
+    after at least <time_window>seconds.
+    Internally all the events are saved as a sqlalchemy database.
+
+    All possibly configurations the user can set are:
+        - time_window: acceptable delay in seconds
+        - status: Only Events can trigger an action
+        - clean (default=True): The Database of events is emptied before we start monitoring
+
+    When setting your parameters please keep it mind that delay only gets checked every
+    <monitor_interval> (defined in cli.py) seconds. This means that in a worst case scenario event is actually delayed
+    monitor_interval + time_window seconds.
+    """
+    def __init__(self, config):
+        super().__init__(config)
+        if self.get_clean():
+            EventCacheDatabase.clear_all()
 
     def prepare_message(self):
         data = self.get_data()
@@ -18,6 +35,8 @@ class EventTransition(AbstractTrigger):
     def get_status_to_look_for(self):
         return self.get_config("status", ignore=True)
 
+    def get_clean(self):
+        return self.get_config("clean", ignore=True, default="True")
 
     def get_observe_start_time(self):
         # Do we care when the start time gets changed

@@ -2,7 +2,8 @@ from . import AbstractTrigger
 
 
 class DataChanged(AbstractTrigger):
-    """Trigger that fires whenever data changes or doesn't change."""
+    """Trigger that fires whenever data changes or doesn't change.
+    Current data is saved in ram."""
 
     def __init__(self, config):
         super().__init__(config)

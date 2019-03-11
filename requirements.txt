@@ -2,3 +2,4 @@ pyyaml
 click
 
 telegram-send
+sqlalchemy
