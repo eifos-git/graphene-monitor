@@ -1,5 +1,5 @@
 from . import AbstractTrigger
-from .event_database import session, EventCache
+from .trigger_db import EventCacheDatabase
 from .utils import string_to_time, time_to_string, time_now
 
 
@@ -7,7 +7,7 @@ class EventTransition(AbstractTrigger):
 
     def prepare_message(self):
         data = self.get_data()
-        message = "The following Event(s) have not changed for at least {0}seconds\n".format(self.get_time_window())
+        message = "The following Event(s) have not changed for at least {0} seconds\n".format(self.get_time_window())
         for overdue_event in data:
             message += "Event Id: {0}\n".format(overdue_event["event_id"])
         return message
@@ -15,9 +15,13 @@ class EventTransition(AbstractTrigger):
     def get_time_window(self):
         return self.get_config("time_window")
 
+    def get_status_to_look_for(self):
+        return self.get_config("status", ignore=True)
+
+
     def get_observe_start_time(self):
         # Do we care when the start time gets changed
-        ost = self.get_config("observer_start_time", ignore=True, default=False)
+        ost = self.get_config("observe_start_time", ignore=True, default=False)
         if not isinstance(ost, bool):
             ost = False
         return ost
@@ -26,13 +30,14 @@ class EventTransition(AbstractTrigger):
         time_window = self.get_time_window()
         observe_start_time = self.get_observe_start_time()
         events_overdue = []
+        database = EventCacheDatabase
 
         def check_existing_has_to_fire(event, entry):
             """Entry already exists in the database. Check if it has changed
             if it has changed: No trigger should be ired
             if it hasnt changed: If the time window is already over, fire
             """
-            if event["status"] != entry.status or (event["start_time"] != string_to_time(entry.start_time) and observe_start_time):
+            if event["status"] != entry.status or (event["start_time"] != entry.start_time and observe_start_time):
                 # status has changed
                 entry.status = event["status"]
                 entry.start_time = event["start_time"]
@@ -42,26 +47,17 @@ class EventTransition(AbstractTrigger):
                     return True
             return False
 
-        def add_new(event):
-            x = EventCache()
-            x.event_id = event["event_id"]
-            x.start_time = event["start_time"]
-            x.status = event["status"]
-            x.last_time_changed = time_to_string(time_now())
-            session.add(x)
-
         for event in data:
-            entry = (
-                session.query(EventCache)
-                .filter_by(event_id=event["event_id"])
-                .first()
-            )
+            entry = database.get_event(event["event_id"])
             if entry is not None:
                 if check_existing_has_to_fire(event, entry):
-                    events_overdue.append(event)
+                    status_tlf = self.get_status_to_look_for()
+                    # If the user defines status for the trigger, only events with that status should fire
+                    if status_tlf is None or event["status"] == status_tlf:
+                        events_overdue.append(event)
             else:
-                add_new(event)
-        session.commit()
+                database.add(event)
+
+        database.session.commit()
         self.update_data(new_data=events_overdue)
-        print("len gevent" + str(len(events_overdue)))
         return len(events_overdue) != 0

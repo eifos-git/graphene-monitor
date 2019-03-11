@@ -6,6 +6,7 @@ Http_and_Peerplays_Monitor:
     triggers:
         - TooLongInProgress:
             class: monitor.trigger.event_transition.EventTransition
+            status: in_progress
             #status upcoming, inprogress
             time_window: 10
             #downtime: 100  # --> 100 seconds no trigger

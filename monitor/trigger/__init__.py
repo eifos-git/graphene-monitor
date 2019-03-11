@@ -127,3 +127,17 @@ class AbstractTrigger(ABC):
             message += str(key) + " = " + str(value) + "\n"
 
         return message
+
+
+class AbstractDatabase(ABC):
+
+    @staticmethod
+    @abstractmethod
+    def add(entry):
+        """Method for adding new entries to your database"""
+
+    @staticmethod
+    @abstractmethod
+    def _get(column, column_value):
+        """Method for retrieving entries from your database with a given value for a column"""
+

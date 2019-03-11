@@ -35,15 +35,18 @@ class Config:
         Config.general_config = general_config
 
     @staticmethod
-    def load_monitor_config():
+    def load_monitor_config(monitor_config=None):
         """Loads the configuration file you specified in cli.py and saves it
         in data
         """
-        Config._load(
-            os.path.join(
-                os.getcwd(),
-                Config._get_general_config("config")
-            ))
+        if monitor_config:
+            Config.data.append(monitor_config)
+        else:
+            Config._load(
+                os.path.join(
+                    os.getcwd(),
+                    Config._get_general_config("config")
+                ))
 
     @staticmethod
     def get_monitor_cycle_length():

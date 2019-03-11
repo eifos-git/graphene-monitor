@@ -20,6 +20,7 @@ def collapse_triggers(triggers):
 
 
 def string_to_time(string_time):
+    """Returns Datetime object as string in our desired syntax"""
     return datetime.strptime(string_time, '%Y-%m-%dT%H:%M:%S')
 
 
