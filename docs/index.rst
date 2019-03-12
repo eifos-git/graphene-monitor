@@ -37,10 +37,10 @@ Using Cli
 You can also run monitor using our commandline interface. There are a bunch of options you can set that will
 change the behaviour of the whole program. The following flags are supported:
 
-* **--config**: Filename of config(default: config.yaml)
-* **--monitor_interval**: Seconds between two monitor cycles in seconds (default 2)
-* **--multithreading**: Enable multithreading. Only available for multiple monitors. (default False)
-* **--trigger_downtime**: Minimum time between two firing of the same trigger. (default 0)
+* **config**: Filename of config(default: config.yaml)
+* **monitor_interval**: Seconds between two monitor cycles in seconds (default 2)
+* **multithreading**: Enable multithreading. Only available for multiple monitors. (default False)
+* **trigger_downtime**: Minimum time between two firing of the same trigger. (default 0)
 
 Contents
 ========

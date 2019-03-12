@@ -4,7 +4,8 @@ from .source_trigger_pair import SourceTriggerPair
 
 
 def get_classname_for_config(path_to_class):
-    """Returns class name and module name for class seperated.
+    """
+    Returns class name and module name for class seperated.
     Example: config.yaml should have an entry in every S/T/A giving the path to
     your implementation e.g.: source_class:monitor.source.http.Http
     To properly import it in python we separate monitor.source.http from Http
@@ -296,6 +297,9 @@ class AbstractMonitor(ABC):
 
 
 class Monitor(AbstractMonitor):
+    """
+    Implementation of abstract Monitor. Currently not different to AbstractMonitor.
+    """
 
     def __init__(self, config, general_config, name=None):
         super().__init__(config, name, general_config)

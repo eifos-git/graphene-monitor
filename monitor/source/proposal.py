@@ -10,6 +10,7 @@ class Proposal(AbstractSource):
         * account_name: <account_name>
 
     Returns all active proposals as list of dictionaries with the following keys:
+
         * proposal_id
         * expiration_time
     """

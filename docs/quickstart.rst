@@ -47,6 +47,8 @@ recommend that you give meaningful names, as it will increase the readability of
 
 Level is used to bind triggers to actions. Messages are triggered for every action with a level equal or smaller than
 trigger level.
+If you ever use one of the predefined monitor domains have a look at their documentation, as the all have
+their own different set of config values.
 
 First Monitor
 -------------

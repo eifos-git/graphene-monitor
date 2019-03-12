@@ -3,6 +3,11 @@ import logging
 
 
 class AbstractAction(ABC):
+    """Define what to do whenever a triggers condition is met.
+    Necessary config settings:
+
+    * level: <int> Level of corresponding trigger that is supposed to fire.
+    """
 
     def __init__(self, action_config):
         self.config = action_config
@@ -11,7 +16,7 @@ class AbstractAction(ABC):
     def get_config(self, config_title, ignore=False):
         """Search for a key in Config and returns the value
 
-        :param config_title: action key in your config file
+        :param config_title: key in your config file
         :param ignore: If false a warning message will be logged
         :return: value of the key in config
         """

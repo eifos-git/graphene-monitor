@@ -1,17 +1,19 @@
 from . import AbstractTrigger
-from datetime import datetime, timedelta
+from .utils import time_now, string_to_time
 import logging
 
 
 class EventOutdated(AbstractTrigger):
-    """Event outdated is a trigger that fires every time the status of an event on the blockchain has a certain
+    """
+    Event outdated is a trigger that fires every time the status of an event on the blockchain has a certain
     value at a given time after its' supposed start time.
 
         Example: If event x is still upcoming 10 minutes after its' start time, send me a warning.
 
     There are two values you can set in the config file:
-        - time_window: acceptable delay in seconds (value for our example: 600)
-        - status: status of the event (value for our example: upcoming)
+
+        * time_window: acceptable delay in seconds (value for our example: 600)
+        * status: status of the event (value for our example: upcoming)
 
     When setting your parameters please keep it mind that delay only gets checked every
     <monitor_interval> (defined in cli.py) seconds. This means that in a worst case scenario event is actually delayed
@@ -35,9 +37,9 @@ class EventOutdated(AbstractTrigger):
     def is_outdated(self, event):
         """Checks whether or not the event is outdated.
         Only ever says that an event is outdated when it currently is set to <event_status>
-        T"""
-        start_time = datetime.strptime(event["start_time"], '%Y-%m-%dT%H:%M:%S')
-        timedelta = (datetime.now() - start_time).total_seconds()
+        """
+        start_time = string_to_time(event["start_time"])
+        timedelta = (time_now("datetime") - start_time).total_seconds()
         return timedelta > self.get_time_window() and event["status"] == self.get_status()
 
     def prepare_message(self):

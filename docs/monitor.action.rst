@@ -16,4 +16,3 @@ Module contents
 .. automodule:: monitor.action
     :members:
     :undoc-members:
-    :show-inheritance:

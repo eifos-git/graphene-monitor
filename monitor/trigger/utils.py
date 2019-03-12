@@ -28,7 +28,14 @@ def time_to_string(time):
     return time.strftime('%Y-%m-%dT%H:%M:%S')
 
 
-def time_now():
-    return string_to_time(datetime.now().strftime('%Y-%m-%dT%H:%M:%S'))
+def time_now(rettype="datetime"):
+    """
+    :param rettype: decides what to return. If "datetime" then type of the returned value is datetime, str otherwise
+    :return: Current time in the format that is used throughout Peerplays.
+    """
+    if rettype == "datetime":
+        return string_to_time(datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S'))
+    return datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
+
 
 

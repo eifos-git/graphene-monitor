@@ -4,6 +4,16 @@ import logging
 
 
 class AbstractTrigger(ABC):
+    """
+    Class that every trigger has to inherit from. Defines the framework for a trigger and its basic config values.
+    That means, every trigger in this application has the following attributes:
+
+        * level: <level> Level of action that is supposed to fire
+        * downtime:<time_in_seconds> (optional) :func:`get_downtime` for details
+        * source: <source_name> (optional) :func:`check_source` for details
+
+
+​"""
 
     def __init__(self, config):
         self.config = config
@@ -36,6 +46,9 @@ class AbstractTrigger(ABC):
                 return None
 
     def get_downtime(self):
+        """Downtime can be used to prevent triggers from spamming its' user. If the value is set and trigger fires,
+        the trigger doesn't fire again for <downtime> seconds.
+        """
         return self.downtime
 
     def get_condition(self):
@@ -46,7 +59,7 @@ class AbstractTrigger(ABC):
         the data retrieved from it.
         No source in the config for trigger is treated as if every source is accepted
 
-        :param current_source_name: The name of the source to be tested
+        :param current_source_name: The *name* (not class) of the source to be tested
         :return bool: Whether or not this trigger should handle the source's data
         """
         source_name = self.get_config("source", True)

@@ -9,9 +9,10 @@ class EventTransition(AbstractTrigger):
     Internally all the events are saved as a sqlalchemy database.
 
     All possibly configurations the user can set are:
-        - time_window: acceptable delay in seconds
-        - status: Only Events can trigger an action
-        - clean (default=True): The Database of events is emptied before we start monitoring
+
+        * time_window: acceptable delay in seconds
+        * status: Only Events can trigger an action
+        * clean (default=True): The Database of events is emptied before we start monitoring
 
     When setting your parameters please keep it mind that delay only gets checked every
     <monitor_interval> (defined in cli.py) seconds. This means that in a worst case scenario event is actually delayed

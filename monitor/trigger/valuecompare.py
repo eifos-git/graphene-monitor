@@ -3,6 +3,13 @@ import logging
 
 
 class ValueCompare(AbstractTrigger):
+    """Compare Value returned from source with another value.
+    Data has to be of type int, float or bool as the operator are not defined for other datatypes.
+    Config values are:
+
+    * <operator>: <operand> (look at :func:`evaluate_trigger_condition` for more details
+    * <operator2>: <operand> multiple operators, logical AND
+    """
 
     def prepare_message(self):
         data = self.get_data()
@@ -36,15 +43,27 @@ class ValueCompare(AbstractTrigger):
 
 
 def evaluate_trigger_condition(key, data, value):
-    """Evaluates whether the defined condition is met.
-    It is evaluated for
-    If not return None ot indicate that the key was not meant for trigger evaluation(i.e. level)
+    """Evalute the condition of this trigger. Available operator are:
+
+    * unequal (ue)
+    * equal (eq)
+    * greater (gr)
+    * greater_or_equal (ge)
+    * less (ls)
+    * less_or_equal (le)
+
+    as well as their corresponding python operators an a short version (in brackets).
+
+    :param key: Or operand that is used for the calculation.
+    :param data: Data returned from source
+    :param value: Value data gets compared with.
+    :return: bool(data key value), e.g. bool(1 == 0) for data=1, key=equal, value=0
     """
     if key in ["!=", "unequal", "ue"]:
-        return value != data
+        return data != value
 
     if key in ["==", "equal", "eq"]:
-        return value == data
+        return data == value
 
     if key in [">", "greater", "gr"]:
         return data > value

@@ -2,8 +2,13 @@ from . import AbstractTrigger
 
 
 class DataChanged(AbstractTrigger):
-    """Trigger that fires whenever data changes or doesn't change.
-    Current data is saved in ram."""
+    """
+    Trigger that fires whenever data changes or doesn't change.
+    Current data is saved in ram. Available config settings:
+
+        * reverse: <bool> (optional, default=False) details: :func:`get_reverse`
+
+    ​"""
 
     def __init__(self, config):
         super().__init__(config)
@@ -14,7 +19,10 @@ class DataChanged(AbstractTrigger):
         return "Data has changed! From {0} to {1}\n".format(self.old_data.old_data, self.old_data.data)
 
     def get_reverse(self):
-        """Get the reverse config. Default is set to False"""
+        """
+        Reverses the logic of this trigger. The default trigger fires every time data changes, but if reverse is set
+        to True, the trigger fires every time it doesn't change.
+        """
         return self.get_config("reverse", ignore=True, default=False)
 
     def check_condition(self, data):

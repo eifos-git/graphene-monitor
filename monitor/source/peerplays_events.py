@@ -11,10 +11,12 @@ class PeerplaysEvents(AbstractSource):
     """Retrieves a list of all events on the peerplays blockchain with its status and start_time.
 
     Available config settings are:
+
         * sport_id (optional): 1.20.<id>
         * eventgroup_id (optional): 1.21.<id>
 
     **Returns** list of dictionaries with the following keys:
+
         * event_id: Event identifier
         * start_time: Supposed start time of the event
         * status: Current status.

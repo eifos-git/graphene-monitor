@@ -3,6 +3,7 @@ import logging
 
 
 class AbstractSource(ABC):
+    """Arbitrary Python script that gets called every monitor circle to receive any kind of data. """
 
     def __init__(self, source_config, source_name):
         self.config = source_config
@@ -81,6 +82,6 @@ class AbstractSource(ABC):
 
     @abstractmethod
     def retrieve_data(self):
-        """Implemented by the subclasses. The Function that gets called every monitor iteration to
+        """Abstract Method. The Function that gets called every monitor iteration to
         retrieve the new data that is to be checked by trigger
         """
