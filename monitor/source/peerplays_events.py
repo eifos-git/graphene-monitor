@@ -9,7 +9,22 @@ from . import AbstractSource
 
 class PeerplaysEvents(AbstractSource):
     """Retrieves a list of all events on the peerplays blockchain with its status and start_time.
-    It is possible to reduce the amount of """
+
+    Available config settings are:
+        * sport_id (optional): 1.20.<id>
+        * eventgroup_id (optional): 1.21.<id>
+
+    **Returns** list of dictionaries with the following keys:
+        * event_id: Event identifier
+        * start_time: Supposed start time of the event
+        * status: Current status.
+
+    Please note that all events are handled as if they were one source. This can lead to unexpected trouble when
+    activating trigger downtime e.g. one trigger fired for event 1.22.1 trigger downtime is activated for 20 minutes
+    and now event 1.22.10 is supposed to fire, but doesn't for 20 minutes.
+    One possible workaround is to deactivate trigger downtime.
+    If you don't want to get spammed, we recommend to create separate event sources for sports/eventgroups
+    """
     def __init__(self, source_config, source_name):
         super().__init__(source_config, source_name)
         self.sport_id = None

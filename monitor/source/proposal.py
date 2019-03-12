@@ -5,6 +5,14 @@ import json
 
 
 class Proposal(AbstractSource):
+    """Get a list of all active proposals on the blockchain from one user. Config settings:
+
+        * account_name: <account_name>
+
+    Returns all active proposals as list of dictionaries with the following keys:
+        * proposal_id
+        * expiration_time
+    """
     def get_witness_account(self):
         return self._get_config_value("account_name")
 
