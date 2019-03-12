@@ -116,7 +116,12 @@ class AbstractMonitor(ABC):
                 for source_name, source_cfg in source.items():  # Only iterates once if the config is setup correctly
                     source_type = self.get_source_type(source_name)
                 src_module, src_class = get_classname_for_config(source_type)
-                module = __import__(src_module, fromlist=[src_class])
+                try:
+                    module = __import__(src_module, fromlist=[src_class])
+                except ModuleNotFoundError:
+                    # Naming convention in config file: monitor.trigger.http.Http == http.Http
+                    src_module = "monitor.source." + src_module
+                    module = __import__(src_module, fromlist=[src_class])
                 klass = getattr(module, src_class)
                 source = klass(source_cfg, source_name=source_name)
                 self.sources.append(source)
@@ -150,7 +155,13 @@ class AbstractMonitor(ABC):
                 for trigger_name, trigger_cfg in trigger.items():  # Only iterates once if the config is setup correctly
                     trigger_type = self.get_trigger_type(trigger_name)  # path to the class of our trigger
                 trg_module, trg_class = get_classname_for_config(trigger_type)
-                module = __import__(trg_module, fromlist=[trg_class])
+                try:
+                    module = __import__(trg_module, fromlist=[trg_class])
+                except ModuleNotFoundError:
+                    # Naming convention in config file: monitor.trigger.http.Http == http.Http
+                    trg_module = "monitor.trigger." + trg_module
+                    module = __import__(trg_module, fromlist=[trg_class])
+
                 klass = getattr(module, trg_class)
                 trigger_cfg["name"] = trigger_name  # Save the name of the trigger to enable a more meaningful action
                 trigger = klass(trigger_cfg)
@@ -183,7 +194,12 @@ class AbstractMonitor(ABC):
                 for action_name, action_cfg in action.items():  # Only iterates once if the config is setup correctly
                     action_type = self.get_action_type(action_name)  # path to the class of our trigger
                 action_module, action_class = get_classname_for_config(action_type)
-                module = __import__(action_module, fromlist=[action_class])
+                try:
+                    module = __import__(action_module, fromlist=[action_class])
+                except ModuleNotFoundError:
+                    # Naming convention in config file: monitor.trigger.http.Http == http.Http
+                    action_module = "monitor.action." + action_module
+                    module = __import__(action_module, fromlist=[action_class])
                 klass = getattr(module, action_class)
                 action_cfg["name"] = action_name  # Save the name of the trigger to enable a more meaningful action
                 action = klass(action_cfg)

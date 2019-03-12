@@ -5,6 +5,10 @@ import logging
 
 
 class PeerplaysBalance(AbstractSource):
+    """Retrieves the current balance of an account on peerplays. All available config values are:
+        account_name: <account_name>
+        symbol: <asset>
+    """
     def __init__(self, source_config, source_name):
         super().__init__(source_config, source_name)
         self.asset = self.get_asset()

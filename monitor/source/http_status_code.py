@@ -2,7 +2,11 @@ from . import AbstractSource
 import requests
 
 
-class Http(AbstractSource):
+class HttpStatusCode(AbstractSource):
+    """Retrieves the url status code for a specified url.
+    Config settings are:
+        url: <url>
+    """
     def get_url(self):
         return self._get_config_value("url")
 

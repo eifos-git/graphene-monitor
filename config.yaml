@@ -1,13 +1,13 @@
 Http_and_Peerplays_Monitor:
     sources:
         - wittnessProposals:
-            class: monitor.source.http.Http
+            class: http_status_code.HttpStatusCode
             url: http://blockchainprojectsbv.com
             account_name: mischa
 
     triggers:
         - TooLongInProgress:
-            class: monitor.trigger.data_available.DataAvailable
+            class: data_available.DataAvailable
             status: in_progress
             time_window: 7200
             downtime: 3600
@@ -15,6 +15,6 @@ Http_and_Peerplays_Monitor:
 
     actions:
         - action:
-            class: monitor.action.stdout.Stdout
+            class: stdout.Stdout
             level: 2
 

@@ -8,6 +8,8 @@ from . import AbstractSource
 
 
 class PeerplaysEvents(AbstractSource):
+    """Retrieves a list of all events on the peerplays blockchain with its status and start_time.
+    It is possible to reduce the amount of """
     def __init__(self, source_config, source_name):
         super().__init__(source_config, source_name)
         self.sport_id = None
