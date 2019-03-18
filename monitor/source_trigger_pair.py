@@ -19,6 +19,7 @@ class SourceTriggerPair:
         """
         return self._wanted
 
+
     def get_trigger(self):
         """Get trigger"""
         return self.trigger
