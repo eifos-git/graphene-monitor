@@ -20,7 +20,7 @@ class ValueCompare(AbstractTrigger):
         for (key, value) in self.config.items():
             cfunc = evaluate_trigger_condition(key, data, value)
             if cfunc is True:
-                message += "   - Data {0} {1}\n".format(key, value)
+                message += "   - Data {0} {1}".format(key, value)
             elif cfunc is None:
                 pass  # Config data not used for the message
         return message

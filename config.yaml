@@ -2,7 +2,7 @@ Http_and_Peerplays_Monitor:
     sources:
         - wittnessProposals:
             class: http_status_code.HttpStatusCode
-            url: http://blockchainprojectsbv.com
+            url: http://localhost:5000
             account_name: mischa
 
     triggers:
@@ -10,11 +10,10 @@ Http_and_Peerplays_Monitor:
             class: data_available.DataAvailable
             status: in_progress
             time_window: 7200
-            downtime: 3600
+            downtime: 10
             level: 2
 
     actions:
         - action:
             class: stdout.Stdout
             level: 2
-

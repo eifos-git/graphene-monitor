@@ -10,8 +10,7 @@ class DataAvailable(AbstractTrigger):
     """
     def prepare_message(self):
         data = self.get_data()
-        message = "Data Received Trigger\n"
-        message += str(data)
+        message = "Data Received Trigger fired. Data: {0}".format(data)
         return message
 
     def check_condition(self, data):

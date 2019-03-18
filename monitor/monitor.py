@@ -233,6 +233,7 @@ class AbstractMonitor(ABC):
         """Main method of monitor. Called once every monitor cycle. At first it updates all the sources, secondly
         it goes through all the stpairs and checks their conditions and finally it fires the messages for each
         stpair that is supposed to fire in the according action."""
+        silent = self._get_general_config("silent")
 
         for source in self.sources:
             source.retrieve_data()
@@ -248,7 +249,8 @@ class AbstractMonitor(ABC):
                 activated_triggers.append(st_pair.get_trigger())
 
         for trigger in activated_triggers:
-            message = "The following Monitor fired: {0}\n".format(self.name) + str(trigger.prepare_message())
+            message = "Monitor {0} fired\n{1}".format(self.name, trigger.prepare_message())
+
             try:
                 trigger_level = trigger.get_level()
             except KeyError:
@@ -257,7 +259,9 @@ class AbstractMonitor(ABC):
             for action in self.actions:
                 if trigger_level == action.get_level():
                     action.fire(message)
-        print("monitor_cycle_finished")
+
+        if not silent:
+            print("monitor_cycle_finished")
 
     def handle_no_data(self, source, level=None):
         """Handle no data gets called every time a source doesn't return data for some reason.
@@ -281,7 +285,7 @@ class AbstractMonitor(ABC):
             # Marked as unreachable by previous monitor iterations
             source.set_is_reachable(True)
             for action in self.actions:
-                action.fire("Source {0} of Monitor {1} is reachable again!\n\n".format(self.name, source.get_source_name()))
+                action.fire("Source {0} of Monitor {1} is reachable again!\n".format(self.name, source.get_source_name()))
 
     def get_source_type(self, source_name):
         return self._get_config("sources", "class", [source_name])
