@@ -1,29 +1,43 @@
 import unittest
+from monitor.source.peerplays_events import PeerplaysEvents
 import sys
 import logging
 import mock
 from io import StringIO
-from monitor import Config, setup_monitors
-from.fixtures import fixture_data,lookup, config, receive_incident, reset_storage
+from monitor import Config, setup_monitors, Monitor
 from datetime import datetime, timedelta
 from unittest.mock import MagicMock, patch
 from monitor.trigger.event_outdated import EventOutdated
 from monitor.action import stdout
 import copy
 
+config = {'sources': [{'MockBuffer': {'class': "monitor.source.peerplays_events.PeerplaysEvents"}}],
+          'triggers': [{'upcoming_event_outdated':
+                        {'class': 'monitor.trigger.event_outdated.EventOutdated',
+                         'time_window': 600,
+                         'status': 'upcoming',
+                         'level': 0
+                        }}],
+          'actions': [{'action': {'class': 'monitor.action.stdout.Stdout', 'level': 0}}]}
+
 
 class TestEvent(unittest.TestCase):
     def setUp(self):
-        fixture_data()
-        lookup.clear()
-        self.storage = reset_storage()
-
-        Config.add_general_config(dict(config="test/test_event_outdated.yaml", trigger_downtime=0))
-        Config.load_monitor_config()
-        self.monitors = setup_monitors()[0]
+        Config.add_general_config(dict(trigger_downtime=0))
+        self.monitors = Monitor(config, name="event_outdated_test", general_config=dict())
         # keep track of the events that get returned
         self.ret_len = 0
         self.action_func = copy.copy(stdout.Stdout.fire)
+
+        # Mock function for retrieve data
+        mock_retrieve_data = MagicMock()
+        mock_retrieve_data.side_effect = self.retrieve_data_sideeffect
+        PeerplaysEvents.retrieve_data = mock_retrieve_data
+
+        # Mock function instead of stdout print
+        mock = MagicMock(return_value=None)
+        mock.side_effect = self.side_effect
+        stdout.Stdout.fire = mock
 
     def side_effect(self, message):
         """
@@ -32,66 +46,48 @@ class TestEvent(unittest.TestCase):
         # The actual length is 4 lines longer to make it easier for humans to read
 
         self.ret_len = len(message.split("\n")) - 4
-        #self.action_func(self, message)
-
-    def test_event_outdated(self):
-        mock = MagicMock(return_value=None)
-        mock.side_effect = self.side_effect
-        stdout.Stdout.fire = mock
-
-        self.monitors.do_monitoring()
-        # ret len is the string that gets printed. 6 means there are exactly 2 events that fired
-        # Dependant on prepare message
-        self.assertEqual(2, self.ret_len)
-
-    def test_event_not_outdated(self):
-        # Every Event is outdated
-        mockIsOutdated = MagicMock(return_value=False)
-        old_is_outdated = copy.copy(EventOutdated._is_outdated)
-        EventOutdated._is_outdated = mockIsOutdated
-
-        # Count and catch action.fire operations
-        mockFire = MagicMock(return_value=None)
-        mockFire.side_effect = self.side_effect
-        stdout.Stdout.fire = mockFire
-
-        self.monitors.do_monitoring()
-        self.assertEqual(0, self.ret_len)
-
-        #Set is_outdated to the original functionality
-        EventOutdated._is_outdated = old_is_outdated
+        # self.action_func(self, message)
 
     def retrieve_data_sideeffect(self):
         self.monitors.sources[0]._data = self.data
 
     def test_event_changed(self):
-        from monitor.source.peerplays_events import PeerplaysEvents
-        now = (datetime.now()-timedelta()).strftime('%Y-%m-%dT%H:%M:%S')
-        # negative time added is like starting the monitor in the future
-        future = (datetime.now()-timedelta(seconds=610)).strftime('%Y-%m-%dT%H:%M:%S')
+        now = (datetime.utcnow()-timedelta()).strftime('%Y-%m-%dT%H:%M:%S')
+        future = (datetime.utcnow()-timedelta(seconds=610)).strftime('%Y-%m-%dT%H:%M:%S')
         self.data = [dict(event_id="1.22.1", start_time=now, status="upcoming"),
                      dict(event_id="1.22.2", start_time=now, status="upcoming")]
-        # retrieve some predefined data
-        mock_retrieve_data = MagicMock()
-        mock_retrieve_data.side_effect = self.retrieve_data_sideeffect
-        old_retrieve_data = copy.copy(PeerplaysEvents.retrieve_data)
-        PeerplaysEvents.retrieve_data = mock_retrieve_data
-        # counting instead of firering the trigger
-        mock = MagicMock(return_value=None)
-        mock.side_effect = self.side_effect
-        stdout.Stdout.fire = mock
-
         self.monitors.do_monitoring()
         self.assertEqual(0, self.ret_len)
-        self.ret_len = 0
 
-        # Jump six minutes and ten seconds in the future
+        self.data = [dict(event_id="1.22.1", start_time=future, status="in-progress"),
+                     dict(event_id="1.22.2", start_time=future, status="in-progress")]
+        self.monitors.do_monitoring()
+        self.assertEqual(0, self.ret_len)
+
+    def test_event_not_changed(self):
+        now = (datetime.utcnow() - timedelta()).strftime('%Y-%m-%dT%H:%M:%S')
+        future = (datetime.utcnow() - timedelta(seconds=610)).strftime('%Y-%m-%dT%H:%M:%S')
+        self.data = [dict(event_id="1.22.1", start_time=now, status="upcoming"),
+                     dict(event_id="1.22.2", start_time=now, status="upcoming")]
+        self.monitors.do_monitoring()
+        self.assertEqual(0, self.ret_len)
+
         self.data = [dict(event_id="1.22.1", start_time=future, status="upcoming"),
                      dict(event_id="1.22.2", start_time=future, status="upcoming")]
         self.monitors.do_monitoring()
         self.assertEqual(2, self.ret_len)
 
-        PeerplaysEvents.retrieve_data = old_retrieve_data
+    def test_wrong_status(self):
+        # event is outdated, but we are not looking for in-progress events
+        now = (datetime.utcnow() - timedelta()).strftime('%Y-%m-%dT%H:%M:%S')
+        future = (datetime.utcnow() - timedelta(seconds=610)).strftime('%Y-%m-%dT%H:%M:%S')
+        self.data = [dict(event_id="1.22.1", start_time=now, status="in-progress")]
+        self.monitors.do_monitoring()
+        self.assertEqual(0, self.ret_len)
+
+        self.data = [dict(event_id="1.22.1", start_time=future, status="in-progress")]
+        self.monitors.do_monitoring()
+        self.assertEqual(0, self.ret_len)
 
     def tearDown(self):
         self.ret_len = 0

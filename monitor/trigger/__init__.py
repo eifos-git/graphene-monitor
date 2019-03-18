@@ -25,7 +25,11 @@ class AbstractTrigger(ABC):
         downtime = self.get_config("downtime", ignore=True)
         if downtime is None:
             from monitor import Config
-            downtime = Config.get_trigger_downtime()
+            try:
+                downtime = Config.get_trigger_downtime()
+            except KeyError:
+                logging.warning("No trigger downtime found.")
+                downtime = 0
         return downtime
 
     def get_config(self, value, ignore=False, default=None):
