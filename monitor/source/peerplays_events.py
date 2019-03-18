@@ -5,7 +5,7 @@ from peerplays.exceptions import EventDoesNotExistException
 from peerplaysapi.exceptions import UnhandledRPCError
 import logging
 from . import AbstractSource
-
+from graphenecommon.instance import SharedInstance
 
 class PeerplaysEvents(AbstractSource):
     """Retrieves a list of all events on the peerplays blockchain with its status and start_time.
@@ -14,6 +14,7 @@ class PeerplaysEvents(AbstractSource):
 
         * sport_id (optional): 1.20.<id>
         * eventgroup_id (optional): 1.21.<id>
+        * node (optional): list of nodes to connect to. Takes 2nd node if 1st node is unavailable.
 
     **Returns** list of dictionaries with the following keys:
 
@@ -29,9 +30,13 @@ class PeerplaysEvents(AbstractSource):
     """
     def __init__(self, source_config, source_name):
         super().__init__(source_config, source_name)
+        SharedInstance.config = dict(node=self._get_node_list())
         self.sport_id = None
         self.eventgroup_id = None
         self._get_additional_config()
+
+    def _get_node_list(self):
+        return self._get_config_value("node")
 
     def _get_additional_config(self):
         self.sport_id = super()._get_config_value("sport_id", ignore_key_error=True)
@@ -47,7 +52,6 @@ class PeerplaysEvents(AbstractSource):
 
         if self.sport_id is None and self.eventgroup_id is None:
             # no sport id is given, therefore we want to check all events
-            Sports.refresh()
             for sport in Sports():
                 for eventgroup in EventGroups(sport["id"]):
                     for event in Events(eventgroup["id"]):

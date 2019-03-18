@@ -2,15 +2,15 @@ Http_and_Peerplays_Monitor:
     sources:
         - Events:
             class: monitor.source.peerplays_events.PeerplaysEvents
+            node:
+                - wss://pta.blockveritas.co:8089
 
     triggers:
         - TooLongInProgressTrigger:
             class: monitor.trigger.event_outdated.EventOutdated
-            #status upcoming, inprograss
             status: in_progress
-            #trigger when event is still in progress 1000 seconds after start_time
+            explorer: http://95.216.13.245:8001/overview/event/{}
             time_window: 12000
-            # If trigger fires once, it isn't supposed to fire again for 60 seconds
             downtime: 60
             level: 0
 

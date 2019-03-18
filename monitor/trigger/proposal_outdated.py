@@ -1,32 +1,13 @@
 from . import AbstractTrigger
-from .utils import time_now, string_to_time
-import logging
+from utils import string
 
 
-class EventOutdated(AbstractTrigger):
-    """
-    Event outdated is a trigger that fires every time the status of an event on the blockchain has a certain
-    value at a given time after its' supposed start time.
-
-        Example: If event x is still upcoming 10 minutes after its' start time, send me a warning.
-
-    There are two values you can set in the config file:
-
-        * time_window: acceptable delay in seconds (value for our example: 600)
-        * status: status of the event (value for our example: upcoming)
-        * explorer(optional): Print format to enable markdown in telegram
-
-    When setting your parameters please keep it mind that delay only gets checked every
-    <monitor_interval> (defined in cli.py) seconds. This means that in a worst case scenario event is actually delayed
-    monitor_interval + time_window seconds.
-    """
-
+class ProposalOutdated(AbstractTrigger):
     def __init__(self, config):
         super().__init__(config)
         self.outdated_events = []
         self._event_status = self.get_config("status", ignore=False)
         self._time_window = self.get_config("time_window", ignore=True, default=600)
-        self._explorer = self.get_explorer()
 
     def get_status(self):
         """Retrieve what status has to be checked.
@@ -35,9 +16,6 @@ class EventOutdated(AbstractTrigger):
 
     def get_time_window(self):
         return self._time_window
-
-    def get_explorer(self):
-        return self.get_config("explorer", ignore=True, default=None)
 
     def is_outdated(self, event):
         """Checks whether or not the event is outdated.
@@ -51,16 +29,11 @@ class EventOutdated(AbstractTrigger):
         message = ""
         if len(self.outdated_events) is 1:
             message += "Outdated Event detected!\n\n"
-        elif self._explorer:
-            message = ""
         else:
             message += "Outdated Events detected!\n\n"
 
         for event in self.outdated_events:
-            if self._explorer:
-                message += "Event Id: [{0}]({1})\n".format(event["event_id"], self._explorer.format(event["event_id"]))
-            else:
-                message += "Event Id: {0}\n".format(event["event_id"])
+            message += "Event Id: {0}\n".format(event["event_id"])
         return message
 
     def check_condition(self, data):

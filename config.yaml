@@ -1,19 +1,20 @@
-Http_and_Peerplays_Monitor:
+EventMonitor:
     sources:
         - wittnessProposals:
-            class: http_status_code.HttpStatusCode
-            url: http://localhost:5000
-            account_name: mischa
+            class: peerplays_events.PeerplaysEvents
+            node:
+                - wss://pta.blockveritas.co:8089
 
     triggers:
         - TooLongInProgress:
-            class: data_available.DataAvailable
-            status: in_progress
-            time_window: 7200
-            downtime: 10
+            class: event_outdated.EventOutdated
+            status: upcoming
+            explorer: http://95.216.13.245:8001/overview/event/{0}
+            time_window: 600
+            downtime: 600
             level: 2
 
     actions:
         - action:
-            class: stdout.Stdout
+            class: telegram_msg.TelegramMsg
             level: 2
