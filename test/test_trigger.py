@@ -7,7 +7,8 @@ from monitor.trigger.data_changed import DataChanged
 
 class TestValueCompare(unittest.TestCase):
     def setUp(self):
-        config = {'class': 'monitor.trigger.valuecompare.ValueCompare', 'greater': 210, 'level': 2, 'name': 'TestTrigger'}
+        config = {'class': 'monitor.trigger.valuecompare.ValueCompare', 'greater': 210, 'downtime': 10,
+                  'level': 2, 'name': 'TestTrigger'}
         self.trigger = ValueCompare(config)
 
     def test_evaluate_trigger_condition(self):
@@ -32,7 +33,8 @@ class TestValueCompare(unittest.TestCase):
 
 class TestAbstractTrigger(unittest.TestCase):
     def setUp(self):
-        config = {'class': 'monitor.trigger.valuecompare.ValueCompare', 'greater': 210, 'level': 2, 'name': 'TestAbstractTrigger'}
+        config = {'class': 'monitor.trigger.valuecompare.ValueCompare', 'greater': 210, 'downtime': 10,
+                  'level': 2, 'name': 'TestAbstractTrigger'}
         config_src = config.copy()
         config_src["source"] = "MockSource"
         self.trigger_src = MockTrigger(config_src)
@@ -77,8 +79,8 @@ class TestAbstractTrigger(unittest.TestCase):
 
 class TestDataChanged(unittest.TestCase):
     def setUp(self):
-        config = {'class': 'monitor.trigger.data_changed.DataChanged', 'greater': 210, 'level': 2,
-                  'name': 'TestChangedTrigger'}
+        config = {'class': 'monitor.trigger.data_changed.DataChanged', 'greater': 210, 'downtime': 10,
+                  'level': 2, 'name': 'TestChangedTrigger'}
         self.trigger = DataChanged(config)
 
     def test_check_condition(self):

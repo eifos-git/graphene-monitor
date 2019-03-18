@@ -1,6 +1,6 @@
 import unittest
 from . import MockSource
-from monitor.source.http import Http
+from monitor.source.http_status_code import HttpStatusCode
 from monitor.source.peerplays_balance import PeerplaysBalance
 
 
@@ -26,7 +26,7 @@ class TestAbstractSource(unittest.TestCase):
 class TestHttp(unittest.TestCase):
     def setUp(self):
         config = {"class": "monitor.source.http.Http", "url": "https://www.blockchainprojectsbv.com/"}
-        self.source = Http(config, "TestHttp")
+        self.source = HttpStatusCode(config, "TestHttp")
 
     def test_get_url(self):
         self.assertEqual(self.source.get_url(), "https://www.blockchainprojectsbv.com/")

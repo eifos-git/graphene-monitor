@@ -1,11 +1,11 @@
 test_config_monitor:
     sources:
         - bitshares:
-            class: monitor.source.http.Http
+            class: http_status_code.HttpStatusCode
             url: https://bitshares.org/
 
         - blockchainprojectsbv:
-            class: monitor.source.http.Http
+            class: http_status_code.HttpStatusCode
             url: https://www.blockchainprojectsbv.com/
 
     triggers:
