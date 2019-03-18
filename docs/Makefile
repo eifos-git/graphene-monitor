@@ -3,7 +3,7 @@
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
-SPHINXBUILD   = C:\Users\Mischa\PycharmProjects\virtualenvs\monitor-env\Scripts\sphinx-build.exe
+SPHINXBUILD   = sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = _build
 

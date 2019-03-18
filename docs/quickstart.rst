@@ -92,8 +92,19 @@ I also sneaked another parameter in. Downtime is used to prevent the application
 SuccessResponseCode fires it has a downtime of eight seconds. That means it won't fire for eight seconds or in our case
 exactly for one cycle.
 
-Examples
---------
+Unreachable Source:
+-------------------
+
+One case that is particularly interesting is that source is unreachable. This means that your source module was unable
+to retrieve any data and therefore every trigger you activated will not work properly. In this case one messaged will be
+printed to every action in the first monitor iteration in which source is not available and one message as it comes back
+up.
+
+Please keep in mind, that those messages are not considered triggers and therefore trigger downtime doesn't apply to
+them.
+
+Examples:
+---------
 
 A bunch of working example configs are provided in the ./examples folder.
 

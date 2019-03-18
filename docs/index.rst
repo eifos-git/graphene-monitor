@@ -41,6 +41,7 @@ change the behaviour of the whole program. The following flags are supported:
 * **monitor_interval**: Seconds between two monitor cycles in seconds (default 2)
 * **multithreading**: Enable multithreading. Only available for multiple monitors. (default False)
 * **trigger_downtime**: Minimum time between two firing of the same trigger. (default 0)
+* **silent**: Doesnt send a message to the console every monitor iteration. (default False)
 
 Contents
 ========

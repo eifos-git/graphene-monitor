@@ -1,5 +1,5 @@
-monitor.source.http_source_code module
-======================================
+monitor.source.http\_status\_code module
+========================================
 
 .. automodule:: monitor.source.http_status_code
     :members:

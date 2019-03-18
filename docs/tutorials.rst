@@ -57,7 +57,7 @@ As soon as you have implemented a method that automatically reads the informatio
 * Create new_source.py as a submodule inside of source.
 * Add a class NewSource that inherits AbstractSource.
 * Add an implementation for the abstract retrieve data function that gets called once every monitor cycle.
-* Change the source.class attribute in config to monitor.source.new_source.NewSource
+* Change the source.class attribute in config to monitor.source.new_source.NewSource or new_trigger.NewTrigger
 
 Add Trigger
 ...........
@@ -70,7 +70,7 @@ problems can be solved by the small amount of triggers we already implemented.
 * Add a new class NewTrigger that inherits AbstractTrigger.
 * Add an implementation for check_condition(data). Has to return boolean
 * (optional, but recommended) Add an implementation for prepare_message(). Has to return string.
-* Change the trigger.class attribute in config to monitor.trigger.new_trigger.NewTrigger
+* Change the trigger.class attribute in config to monitor.trigger.new_trigger.NewTrigger or new_trigger.NewTrigger
 
 
 Add Action
@@ -82,7 +82,7 @@ as a string to be sent.
 * Create new_action.py as a submodule inside of action.
 * Add a new class NewAction that inherits AbstractAction.
 * Implement the method fire(message) that receive a message as string and is supposed to be sent to the user in any way.
-* Change the action.class attribute in config to monitor.action.new_action.NewAction
+* Change the action.class attribute in config to monitor.action.new_action.NewAction or new_action.NewAction
 
 
 
