@@ -111,12 +111,42 @@ is not available and one message as soon as it comes back up.
 Please keep in mind, that those messages are not considered triggers and therefore trigger downtime doesn't apply to
 them.
 
+.. _telegram_setup:
+
+Setting up Telegram
+-------------------
+
+Setting up your own telegram bot is necessary if you want to use the telegram action.
+Firstly you need to create your own bot. This can achieved by talking to `BotFather <https://telegram.me/botfather>`_.
+Simply send him the following messages:
+
+::
+
+    /start
+    /newbot
+    <NameForTheBot>​
+    <yourBotsUsername>
+
+BotFather will send you the http token once you are done.
+To get a chat Id send the bot a message by inserting the BotsUsername into the following link:
+
+::
+
+    https://telegram.me/<yourBotsUsername>
+
+Insert the token for your bot into the following link
+
+::
+
+    https://api.telegram.org/bot<token>/getUpdates
+
+and look for your name and the chat_id next to it.
+
 Examples
 --------
 
 A bunch of working example configs are provided in the ./examples folder.
 
-* event_outdated.yaml: Monitor Peerplays Events and get notified when the status of an event
-    hasn't changed after a specified time after its' supposed start time.
-* event_transition.yaml: Monitor all Peerplays Events and notifies you if none has changed for a
-    specified time period
+* event_outdated.yaml: Monitor Peerplays Events and get notified when the status of an event hasn't changed after a specified time after its' supposed start time.
+* event_transition.yaml: Monitor all Peerplays Events and notifies you if none has changed for a specified time period
+* telegram_messanger.yaml: Monitor two types of Eventgroups seperately with one monitor and get messages via telegram

@@ -8,7 +8,12 @@ chat_id = <your-chat-id>
 
 
 class TelegramMsg(AbstractAction):
-    """Sends you a message via telegram."""
+    """Sends you a message via telegram.
+    Config values are:
+
+    * token: The individual token for your telegram bot. :ref:`How to setup <telegram_setup>`
+    * chat_id: Chat id for your telegram bot. See token on how to get it.
+    """
     def __init__(self, action_config):
         super().__init__(action_config)
         self.token = self.get_token()
