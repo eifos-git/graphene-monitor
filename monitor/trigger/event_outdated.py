@@ -50,12 +50,13 @@ class EventOutdated(AbstractTrigger):
     def prepare_message(self):
         message = ""
         if len(self.outdated_events) is 1:
-            message += "Outdated Event detected!\n\n"
+            message += "Outdated Event detected!\n"
         elif self._explorer:
             message = ""
         else:
-            message += "Outdated Events detected!\n\n"
+            message += "Outdated Events detected!\n"
 
+        message += "Trigger: {0}\n".format(self.get_config("name"))
         for event in self.outdated_events:
             if self._explorer:
                 message += "Event Id: [{0}]({1})\n".format(event["event_id"], self._explorer.format(event["event_id"]))
