@@ -20,4 +20,3 @@ To verify that everything is working as intended run:
     $ python3 cli.py --config="./examples/test_config.yaml"
 
 A message that the website is reachable should appear every 10 seconds.
-
