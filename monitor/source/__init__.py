@@ -11,7 +11,7 @@ class AbstractSource(ABC):
         self._data = None
         self._currently_reachable = True
 
-    def _get_config_value(self, key, ignore_key_error=False):
+    def get_config(self, key, ignore_key_error=False):
         """Method to retrieve the value of the sources config with a given key.
         If ignore key error is set to True any type of key error is ignored and therefore
         this method can be used as a way to check if a config value already exists
@@ -44,7 +44,7 @@ class AbstractSource(ABC):
         :param overwrite: If true it can be used to overwrite existing settings. Otherwise this function
             will do nothing
         """
-        value_for_key = self._get_config_value(key, ignore_key_error=True)
+        value_for_key = self.get_config(key, ignore_key_error=True)
         if value_for_key is None:
             # key doesn't exist yet
             self.config[key] = value

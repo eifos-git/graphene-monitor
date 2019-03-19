@@ -9,7 +9,7 @@ class HttpStatusCode(AbstractSource):
         * url: <url>
     """
     def get_url(self):
-        return self._get_config_value("url")
+        return self.get_config("url")
 
     def retrieve_data(self):
         """Returns the status code of the http request.

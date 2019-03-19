@@ -15,7 +15,7 @@ class Proposal(AbstractSource):
         * expiration_time
     """
     def get_witness_account(self):
-        return self._get_config_value("account_name")
+        return self.get_config("account_name")
 
     def retrieve_data(self):
         account = self.get_witness_account()

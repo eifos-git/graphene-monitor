@@ -36,11 +36,11 @@ class PeerplaysEvents(AbstractSource):
         self._get_additional_config()
 
     def _get_node_list(self):
-        return self._get_config_value("node")
+        return self.get_config("node")
 
     def _get_additional_config(self):
-        self.sport_id = super()._get_config_value("sport_id", ignore_key_error=True)
-        self.eventgroup_id = super()._get_config_value("eventgroup_id", ignore_key_error=True)
+        self.sport_id = super().get_config("sport_id", ignore_key_error=True)
+        self.eventgroup_id = super().get_config("eventgroup_id", ignore_key_error=True)
 
     def _append_event(self, data, event):
         data.append(dict(event_id=event["id"], start_time=event["start_time"], status=event["status"]))

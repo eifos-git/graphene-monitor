@@ -16,14 +16,14 @@ class PeerplaysBalance(AbstractSource):
         self.account_name = self.get_account_name()
 
     def get_asset(self):
-        asset = self._get_config_value("symbol")
+        asset = self.get_config("symbol")
         if asset is None:
             logging.error("Missing 'symbol' key in config of {0}".format(self.get_source_name()))
             return None
         return asset
 
     def get_account_name(self):
-        account_name = self._get_config_value("account_name")
+        account_name = self.get_config("account_name")
         if account_name is None:
             logging.error("Missing 'account_name' key in config of {0}".format(self.get_source_name()))
         return account_name
