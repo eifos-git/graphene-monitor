@@ -18,12 +18,12 @@ Monitor is divided into three subpackages:
 * trigger (calculate condition)
 * action (send message)
 
-Each subpackages, sometimes referred to as *monitor domain*, takes on it's own individual task.
+Each subpackages, sometimes referred to as *monitor domain*, takes on its own individual task.
 
 There are two classes that stitch them together. First and foremost there is the monitor class.
 Monitor itself is the framework that is used to do the monitoring and parse data from one module to the other.
 Secondly there is source trigger pair. For a closer documentation on why it is necessary to combine two of our modules
-have a look at it's documentation.
+have a look at its documentation.
 
 Getting started
 ---------------
