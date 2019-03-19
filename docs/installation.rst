@@ -7,11 +7,8 @@ Manual Installation
 
 ::
 
-    $ mkdir AMonitor
-    $ cd AMonitor
-    $ git clone https://github.com/MischaD/monitor.git
+    $ mkdir graphene-monitor
+    $ cd graphene-monitor
+    $ git clone https://github.com/blockchainbv/graphene-monitor.git
 
-Installation with pip3
-----------------------
 
-To be added.

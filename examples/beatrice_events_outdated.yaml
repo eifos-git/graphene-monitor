@@ -1,0 +1,20 @@
+EventMonitor:
+    sources:
+        - wittnessProposals:
+            class: peerplays_events.PeerplaysEvents
+            node:
+                - wss://pta.blockveritas.co:8089
+
+    triggers:
+        - TooLongInProgress:
+            class: event_outdated.EventOutdated
+            status: upcoming
+            explorer: http://95.216.13.245:8001/overview/event/{0}
+            time_window: 600
+            downtime: 600
+            level: 2
+
+    actions:
+        - action:
+            class: telegram_msg.TelegramMsg
+            level: 2

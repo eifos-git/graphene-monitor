@@ -8,7 +8,7 @@ Submodules
 
    monitor.action.log
    monitor.action.stdout
-   monitor.action.telegram
+   monitor.action.telegram_msg
 
 Module contents
 ---------------

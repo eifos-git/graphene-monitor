@@ -1,15 +1,18 @@
-Graphene-Monitor
-================
+# Graphene-Monitor
 
-This tool provides an easy to use framework to monitor any kind of data
-and to notify the user whenever a specified condition is met. 
+Graphene monitor provides an easy to use framework to monitor data, by sending you a message every time 
+some kind of condition is met. 
 
+## Installation
 
-How to use a Monitor
-====================
+    mkdir graphene-monitor
+    cd graphene-monitor
+    git clone https://github.com/blockchainbv/graphene-monitor.git
 
-Although this tool already provides a bunch of classes to work with the
-main purpose of this module is not to give you an application for your
-specific problem, but to provide a framework you can easily adjust to
-your problem. For a closer documentation on how to proceed have a look
-at quickstart.
+## Getting Started
+
+The Quickstart section in our documentation is a good place to 
+learn about the application and get your first monitor running.
+Afterwards you may want to have a look at the tutorial section to modify 
+it to your own problems.
+
