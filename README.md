@@ -11,6 +11,12 @@ some kind of condition is met.
     $ source venv/bin/activate
     $ python3 setup.py install
 
+To verify that everything is working as intended run:
+
+    $ python3 cli.py --config="./examples/test_config.yaml"
+
+A message that a website is reachable should appear every 10 seconds.
+
 ## Getting Started
 
 The Quickstart section in our documentation is a good place to 
