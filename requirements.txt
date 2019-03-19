@@ -3,3 +3,4 @@ click
 
 python-telegram-bot
 sqlalchemy
+requests
