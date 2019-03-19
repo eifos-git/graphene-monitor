@@ -5,9 +5,11 @@ some kind of condition is met.
 
 ## Installation
 
-    mkdir graphene-monitor
-    cd graphene-monitor
-    git clone https://github.com/blockchainbv/graphene-monitor.git
+    $ git clone git@github.com:blockchainbv/graphene-monitor.git
+    $ cd graphene-monitor
+    $ virtualenv venv
+    $ source venv/bin/activate
+    $ python3 setup.py install
 
 ## Getting Started
 
