@@ -1,0 +1,16 @@
+WebsiteReachable:
+    sources:
+        - Blockchainprojectsbv:
+            class: http_status_code.HttpStatusCode
+            url: https://www.blockchainprojectsbv.com/
+
+    triggers:
+        - ServerError:
+            class: valuecompare.ValueCompare
+            greater_or_equal: 200
+            level: 0
+
+    actions:
+        - Stdout:
+            class: monitor.action.stdout.Stdout
+            level: 0
