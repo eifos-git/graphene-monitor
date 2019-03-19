@@ -1,0 +1,46 @@
+# Example of a case where the keyword source may be very useful
+# Depending on the sport or even the tournaments some events may take more time than others
+# This is where source comes in handy
+
+EventMonitor:
+    sources:
+        # The first Eventgroup has the usual playtime of 90 minutes.
+        - soccerEvents:
+            class: peerplays_events.PeerplaysEvents
+            node:
+                - wss://pta.blockveritas.co:8089
+            eventgroup_id: 1.21.3
+
+        # The second Eventgroup may also have extra time and a penalty shootout
+        - soccerKoEvents:
+            class: peerplays_events.PeerplaysEvents
+            node:
+                - wss://pta.blockveritas.co:8089
+            eventgroup_id: 1.21.4
+
+
+    triggers:
+        - SoccerTooLongInProgress:
+            class: event_outdated.EventOutdated
+            source: soccerEvents
+            status: upcoming
+            explorer: http://95.216.13.245:8001/overview/event/{0}
+              # event 1.22.0 outdated ? markdown link to http://95.216.13.245:8001/overview/event/1.22.0
+            time_window: 7500 # 90 minutes game time + 15 break + 20 minutes buffer
+            level: 2
+
+        - SoccerKoTooLongInProgress:
+            class: event_outdated.EventOutdated
+            source: soccerKoEvents
+            status: in_progress
+            explorer: http://95.216.13.245:8001/overview/event/{0}
+
+            time_window: 11400 # 90 minutes game time + 15 break + 30 extra time + 30 penalty shootout + 25 buffer
+            level: 2
+
+    actions:
+        - action:
+            class: telegram_msg.TelegramMsg
+            token: <your-telegram-token>
+            chat_id: <your-telegream-chat-id>
+            level: 2

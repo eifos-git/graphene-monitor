@@ -16,8 +16,5 @@ EventMonitor:
 
     actions:
         - action:
-            class: telegram_msg.TelegramMsg
-            token: <your-telegram-token>
-            #chat_id: chat_id = <your-chat-id>
-            chat_id: <your-chat-id>
+            class: stdout.Stdout
             level: 2
