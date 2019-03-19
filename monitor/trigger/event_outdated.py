@@ -8,15 +8,15 @@ class EventOutdated(AbstractTrigger):
     Event outdated is a trigger that fires every time the status of an event on the blockchain has a certain
     value at a given time after its' supposed start time.
 
-        Example: If event x is still upcoming 10 minutes after its' start time, send me a warning.
+        Example: If event x is still *upcoming* 10 minutes after its' start time, send me a warning.
 
-    There are two values you can set in the config file:
+    There are three values you can set in the config file:
 
         * time_window: acceptable delay in seconds (value for our example: 600)
         * status: status of the event (value for our example: upcoming)
-        * explorer(optional): Print format to enable markdown in telegram
+        * explorer(optional): Has to be string with curly brackets. Send markdown links via telegram.
 
-    When setting your parameters please keep it mind that delay only gets checked every
+    When setting your parameters, please keep in mind that delay only gets checked every
     <monitor_interval> (defined in cli.py) seconds. This means that in a worst case scenario event is actually delayed
     monitor_interval + time_window seconds.
     """

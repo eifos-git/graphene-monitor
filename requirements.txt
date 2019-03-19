@@ -1,5 +1,5 @@
 pyyaml
 click
 
-telegram-send
+python-telegram-bot
 sqlalchemy

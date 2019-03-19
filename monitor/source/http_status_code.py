@@ -6,13 +6,14 @@ class HttpStatusCode(AbstractSource):
     """Retrieves the url status code for a specified url.
     Config settings are:
 
-        *url: <url>
+        * url: <url>
     """
     def get_url(self):
         return self._get_config_value("url")
 
     def retrieve_data(self):
-        """Returns the status code of the http request. """
+        """Returns the status code of the http request.
+        """
         self._set_data()
         try:
             url = self.get_url()
