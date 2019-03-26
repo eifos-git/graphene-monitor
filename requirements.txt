@@ -1,6 +1,6 @@
 pyyaml
 click
-
+peerplays
 python-telegram-bot
 sqlalchemy
 requests
