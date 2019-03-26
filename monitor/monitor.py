@@ -49,7 +49,7 @@ class AbstractMonitor(ABC):
         param value: value to be searched for. If the value is defined multiple times for one monitor,
             i.e. level use the parameter subclasses
             Value can be non to indicate that you want the config for a whole domain
-        param subclasse: Has to be a list! In case of ambiguity enter the name of the subclass.
+        param subclass: Has to be a list! In case of ambiguity enter the name of the subclass.
             i.e. subclasses=["trigger1"] if you want the config of trigger 1
         """
 

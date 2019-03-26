@@ -1,10 +1,6 @@
 from . import AbstractAction
 import logging
 import telegram
-token ='<your-telegram-token>'
-bot = telegram.Bot(token=token)
-chat_id = <your-chat-id>
-# private: chat_id2 = <your-chat-id>
 
 
 class TelegramMsg(AbstractAction):
