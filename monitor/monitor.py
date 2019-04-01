@@ -117,14 +117,14 @@ class AbstractMonitor(ABC):
                 src_module, src_class = get_classname_for_config(source_type)
                 try:
                     module = __import__(src_module, fromlist=[src_class])
-                except ModuleNotFoundError:
+                except ImportError:
                     # Naming convention in config file: monitor.trigger.http.Http == http.Http
                     src_module = "monitor.source." + src_module
                     module = __import__(src_module, fromlist=[src_class])
                 klass = getattr(module, src_class)
                 source = klass(source_cfg, source_name=source_name)
                 self.sources.append(source)
-            except ModuleNotFoundError:
+            except ImportError:
                 logging.error("Unable to find the Module you specified for {0}".format(source_name))
                 continue
             except AttributeError:
@@ -156,7 +156,7 @@ class AbstractMonitor(ABC):
                 trg_module, trg_class = get_classname_for_config(trigger_type)
                 try:
                     module = __import__(trg_module, fromlist=[trg_class])
-                except ModuleNotFoundError:
+                except ImportError:
                     # Naming convention in config file: monitor.trigger.http.Http == http.Http
                     trg_module = "monitor.trigger." + trg_module
                     module = __import__(trg_module, fromlist=[trg_class])
@@ -165,7 +165,7 @@ class AbstractMonitor(ABC):
                 trigger_cfg["name"] = trigger_name  # Save the name of the trigger to enable a more meaningful action
                 trigger = klass(trigger_cfg)
                 self.triggers.append(trigger)
-            except ModuleNotFoundError:
+            except ImportError:
                 logging.error("Unable to find the Module you specified for trigger " + trigger_name)
                 continue
             except AttributeError:
@@ -195,7 +195,7 @@ class AbstractMonitor(ABC):
                 action_module, action_class = get_classname_for_config(action_type)
                 try:
                     module = __import__(action_module, fromlist=[action_class])
-                except ModuleNotFoundError:
+                except ImportError:
                     # Naming convention in config file: monitor.trigger.http.Http == http.Http
                     action_module = "monitor.action." + action_module
                     module = __import__(action_module, fromlist=[action_class])
@@ -203,7 +203,7 @@ class AbstractMonitor(ABC):
                 action_cfg["name"] = action_name  # Save the name of the trigger to enable a more meaningful action
                 action = klass(action_cfg)
                 self.actions.append(action)
-            except ModuleNotFoundError:
+            except ImportError:
                 logging.error("Unable to find the Module you specified for {0}".format(action_name))
                 continue
             except AttributeError or TypeError:
