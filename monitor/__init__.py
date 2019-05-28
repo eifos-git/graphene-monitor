@@ -22,7 +22,7 @@ class Config:
             monitor_config_files = [monitor_config_files]
         for file in monitor_config_files:
             with open(file, 'r') as stream:
-                Config.data.append(yaml.load(stream, Loader=yaml.FullLoader))
+                Config.data.append(yaml.load(stream, Loader=yaml.SafeLoader))
 
     @staticmethod
     def _get_general_config(key):

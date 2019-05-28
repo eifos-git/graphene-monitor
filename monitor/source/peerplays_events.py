@@ -7,6 +7,7 @@ import logging
 from . import AbstractSource
 from graphenecommon.instance import SharedInstance
 
+
 class PeerplaysEvents(AbstractSource):
     """Retrieves a list of all events on the peerplays blockchain with its status and start_time.
 
@@ -43,7 +44,7 @@ class PeerplaysEvents(AbstractSource):
         self.eventgroup_id = super().get_config("eventgroup_id", ignore_key_error=True)
 
     def _append_event(self, data, event):
-        data.append(dict(event_id=event["id"], start_time=event["start_time"], status=event["status"]))
+        data.append(dict(event_id=event["id"], start_time=event["start_time"], status=event["status"], name=event["name"]))
 
     def retrieve_data(self):
         """Depending on your config file returns all the events of the blockchain as a list of dicts"""

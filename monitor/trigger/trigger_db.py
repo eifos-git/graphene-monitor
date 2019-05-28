@@ -5,7 +5,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 
-
 class EventCacheDatabase(AbstractDatabase):
     Base = declarative_base()
 
@@ -16,10 +15,11 @@ class EventCacheDatabase(AbstractDatabase):
         start_time = Column(String(50))
         last_time_changed = Column(String(50))
         status = Column(String(50))
+        name = Column(String(50))
 
         def __repr__(self):
-            return "Event: {0} - Status: {1} - Changetime: {2}"\
-                .format(self.event_id, self.status, self.last_time_changed)
+            return "Event: {0} Name:{name} - Status: {1} - Changetime: {2}"\
+                .format(self.event_id, self.status, self.last_time_changed, name=self.name)
 
     engine = create_engine("sqlite:///event_cache.sqlite", echo=False)
     Base.metadata.create_all(engine)
@@ -46,8 +46,15 @@ class EventCacheDatabase(AbstractDatabase):
         x.event_id = event["event_id"]
         x.start_time = event["start_time"]
         x.status = event["status"]
+        x.name = event["name"]
         x.last_time_changed = time_to_string(time_now())
         EventCacheDatabase.session.add(x)
+
+    @staticmethod
+    def remove(event_id):
+        x = EventCacheDatabase.session.query(id=event_id).first()
+        if x:
+            EventCacheDatabase.session.delete(x)
 
     @staticmethod
     def get_event(event_id):

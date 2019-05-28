@@ -168,8 +168,8 @@ class AbstractMonitor(ABC):
             except ImportError:
                 logging.error("Unable to find the Module you specified for trigger " + trigger_name)
                 continue
-            except AttributeError:
-                logging.error("Missing or wrong trigger.class Attribute in " + trigger_name)
+            except AttributeError as err:
+                logging.error("Missing or wrong trigger.class Attribute in " + trigger_name + err)
                 continue
             except TypeError:
                 logging.error("Missing trigger.class Attribute in " + trigger_name)
